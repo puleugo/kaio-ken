@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "build": " ncc build src/index.ts",
+    "build": "ncc build -m src/index.ts",
     "start": "node dist/src/index.js",
     "test": "test"
   },
