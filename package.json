@@ -4,9 +4,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "build:ts": "npx tsc",
-    "build:ncc": "ncc build dist/src/index.js -o dist",
-    "build": "npm run build:ts && npm run build:ncc",
+    "build": " ncc build src/index.ts",
     "start": "node dist/src/index.js",
     "test": "test"
   },
