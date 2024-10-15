@@ -1,7 +1,4 @@
 import {PostEntity} from "./postEntity";
-import type {
-	RestEndpointMethodTypes
-} from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
 import {BlogEntity} from "./blog.entity";
 
 export class Posts {
@@ -28,7 +25,10 @@ export class Posts {
 		return this._blog;
 	}
 
-	get subscribeFiles(): Pick<RestEndpointMethodTypes["repos"]["createOrUpdateFileContents"]["parameters"], 'path' | 'content'>[] {
+	get subscribeFiles(): {
+		path: string;
+		content: string;
+	}[] {
 		this._blog?.fetchLastPublishedAt(this.posts.length);
 
 		return this.posts.map(post => ({
