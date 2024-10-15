@@ -1,7 +1,7 @@
 import {Posts} from "../../src/domain/posts.js";
 import {rssRepository, RssRepositoryInterface} from "../../src/repository/rss.repository.js";
 import {spreadSheetRepository, SpreadSheetRepositoryInterface} from "../../src/repository/spread-sheet.repository.js";
-import {RssSearcherClientInterface} from "../../src/repository/rss.searcher.js";
+import {RssSearcherClientInterface} from "../../src/implemention/rss.searcher";
 
 class RssSearcher implements RssSearcherClientInterface {
 	constructor(

@@ -1,6 +1,6 @@
 import {githubClient, GithubRepositoryInterface} from "./repository/github.repository.js";
 import {spreadSheetUploader, SpreadSheetUploaderInterface} from "./implemention/spread-sheet.uploader.js";
-import {rssSearcher, RssSearcherClientInterface} from "./repository/rss.searcher.js";
+import {rssSearcher, RssSearcherClientInterface} from "./implemention/rss.searcher";
 
 export class App {
 	constructor(

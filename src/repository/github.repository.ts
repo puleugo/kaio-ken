@@ -1,6 +1,7 @@
 import {Posts} from "../domain/posts.js";
 import axios from "axios";
 import {envValidator, EnvValidatorInterface} from "../util/validator/env-validator.js";
+import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 
 export interface GithubRepositoryInterface {
 	uploadPosts(newPosts: Posts): Promise<Posts>;
@@ -15,7 +16,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 	private readonly MODES = { FILE: '100644', FOLDER: '040000' };
 	private readonly TYPE = { BLOB: 'blob', TREE: 'tree' };
 
-	constructor(private readonly envValidator: EnvValidatorInterface) {
+	constructor(private readonly envValidator: EnvValidatorInterface, private readonly logger: LoggerInterface) {
 	this.config = {
 			owner: this.envValidator.getOrThrow('GH_OWNER'),
 			repo: this.envValidator.getOrThrow('GH_REPOSITORY'),
@@ -33,8 +34,11 @@ export class GithubRepository implements GithubRepositoryInterface {
 
 
 	async uploadPosts(newPosts: Posts): Promise<Posts> {
-
-		if (newPosts.length === 0) return newPosts;
+		if (newPosts.length === 0){
+			this.logger.info('새로운 포스트가 없어 업로드를 진행하지 않습니다.');
+			return newPosts
+		}
+		this.logger.info('새로운 포스트가 발견되어 업로드를 진행합니다.');
 		const updateData = newPosts.subscribeFiles;
 
 		const { data: { object: { sha: currentCommitSha } } } = await axios({ url: this.referenceUrl, headers: this.headers });
@@ -54,6 +58,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 					)),
 			},
 		});
+		this.logger.info('마크다운 포스트 커밋 생성 완료');
 
 		const { data: { sha: newCommitSha } } = await axios({
 			url: this.commitUrl,
@@ -73,9 +78,10 @@ export class GithubRepository implements GithubRepositoryInterface {
 			headers: this.headers,
 			data: { sha: newCommitSha },
 		});
+		this.logger.info('마크다운 포스트 업로드 완료');
 
 		return newPosts;
 	}
 }
 
-export const githubClient = new GithubRepository(envValidator);
+export const githubClient = new GithubRepository(envValidator, githubActionLogger);

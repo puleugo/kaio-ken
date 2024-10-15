@@ -1,5 +1,5 @@
 import {Posts} from "../../src/domain/posts.js";
-import {RssSearcherClientInterface} from "../../src/repository/rss.searcher.js";
+import {RssSearcherClientInterface} from "../../src/implemention/rss.searcher";
 
 export class RssReadClientStub implements RssSearcherClientInterface{
 	posts: any;

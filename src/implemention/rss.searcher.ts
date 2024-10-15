@@ -1,6 +1,6 @@
-import {Posts} from "../domain/posts.js";
-import {rssRepository, RssRepositoryInterface} from "./rss.repository.js";
-import {spreadSheetRepository, SpreadSheetRepositoryInterface} from "./spread-sheet.repository.js";
+import {Posts} from "../domain/posts";
+import {rssRepository, RssRepositoryInterface} from "../repository/rss.repository";
+import {spreadSheetRepository, SpreadSheetRepositoryInterface} from "../repository/spread-sheet.repository";
 
 export interface RssSearcherClientInterface {
 	searchNew(): Promise<Posts>;

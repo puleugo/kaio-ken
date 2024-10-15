@@ -21,6 +21,6 @@ export class GithubActionLogger implements LoggerInterface{
 	info(message: string) {
 		this.core.info(message)
 	}
-
-
 }
+
+export const githubActionLogger = new GithubActionLogger();

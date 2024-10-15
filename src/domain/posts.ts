@@ -25,6 +25,10 @@ export class Posts {
 		return this._blog;
 	}
 
+	set blog(blog: BlogEntity) {
+		this._blog = blog;
+	}
+
 	get subscribeFiles(): {
 		path: string;
 		content: string;

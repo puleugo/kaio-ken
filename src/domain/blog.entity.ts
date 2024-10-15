@@ -24,6 +24,10 @@ export class BlogEntity{
 	get lastPublishedAt(): Date {
 		return this.value.lastPublishedAt;
 	}
+	get title(): string {
+		return this.value.title;
+	}
+
 	private value: BlogInterface ;
 
 	get toValue() :any[] {
@@ -32,6 +36,10 @@ export class BlogEntity{
 
 	get isValidEntity(): boolean {
 		return this.value !== undefined;
+	}
+
+	get platform(): BlogPlatformEnum {
+		return this.value.platform;
 	}
 
 	fetchLastPublishedAt(newPostCount: number) {

@@ -25,7 +25,7 @@ if (!isMethodExist) {
 		methodObject[method]();
 	} catch (e: unknown) {
 		if (e instanceof Error) {
-			core.setFailed(e.message);
+			core.setFailed('알 수 없는 에러가 발생했습니다.');
 		}
 		else if(typeof e === 'string') {
 			core.setFailed(e);
