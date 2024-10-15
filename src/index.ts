@@ -4,7 +4,7 @@ import {app} from "./app.js";
 const methodObject = {
 	'READ': () => app.generateOriginalPost(),
 	'PUBLISH': () => new Promise<void>(resolve => resolve()),
-	'UPDATE_SPREAD_SHEEt': () =>app.updateSpreadSheetSettings(),
+	'UPDATE_SPREAD_SHEET': () =>app.updateSpreadSheetSettings(),
 }
 
 const method =  core.getInput('METHOD') as keyof typeof methodObject;
