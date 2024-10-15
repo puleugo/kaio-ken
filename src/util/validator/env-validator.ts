@@ -17,6 +17,10 @@ export class EnvValidator implements EnvValidatorInterface{
 	getOrNull(key: string): string | null {
 		return process.env[key] ?? null;
 	}
+
+	put(key: string, value: string) {
+		process.env[key] = value;
+	}
 }
 
 export const envValidator = new EnvValidator();

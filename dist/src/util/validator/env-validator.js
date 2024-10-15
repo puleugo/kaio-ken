@@ -9,5 +9,8 @@ export class EnvValidator {
     getOrNull(key) {
         return process.env[key] ?? null;
     }
+    put(key, value) {
+        process.env[key] = value;
+    }
 }
 export const envValidator = new EnvValidator();

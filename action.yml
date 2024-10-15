@@ -1,5 +1,10 @@
 name: 'Automated Translation Development Post Distribution Application'
 description: 'Automated Translation Development Post Distribution Application'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+
 inputs:
   GH_REPOSITORY:
     description: 'GitHub repository name'
@@ -22,35 +27,10 @@ inputs:
     required: true
 
   METHOD:
-    description: 'EXCUTE METHOD'
+    description: 'EXECUTE METHOD'
     required: true
     options:
       - 'READ'
       - 'PUBLISH'
       - 'UPDATE_SPREAD_SHEET'
 
-runs:
-  using: 'node20'
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-
-    - name: Install dependencies
-      shell: bash
-      run: npm install
-
-    - name: Run start command with environment variables
-      shell: bash
-      run: |
-        npx cross-env \
-          GH_REPOSITORY='${{ inputs.GH_REPOSITORY }}' \
-          GH_TOKEN='${{ inputs.GH_TOKEN }}' \
-          GH_OWNER='${{ inputs.GH_OWNER }}' \
-          GOOGLE_SHEET_ID='${{ inputs.GOOGLE_SHEET_ID }}' \
-          GOOGLE_CLIENT_EMAIL='${{ inputs.GOOGLE_CLIENT_EMAIL }}' \
-          GOOGLE_PRIVATE_KEY='${{ inputs.GOOGLE_PRIVATE_KEY }}' \
-          npm run start
