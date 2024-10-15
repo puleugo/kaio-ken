@@ -18,7 +18,13 @@ export class EnvValidator implements EnvValidatorInterface{
 		return process.env[key] ?? null;
 	}
 
-	put(key: string, value: string) {
+	putOrThrow(key: string, value: string) {
+		if (!key) {
+			throw new Error('key가 필요합니다.');
+		}
+		if (!value) {
+			throw new Error(`${key}가 필요합니다.`);
+		}
 		process.env[key] = value;
 	}
 }

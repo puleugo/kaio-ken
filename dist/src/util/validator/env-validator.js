@@ -9,7 +9,13 @@ export class EnvValidator {
     getOrNull(key) {
         return process.env[key] ?? null;
     }
-    put(key, value) {
+    putOrThrow(key, value) {
+        if (!key) {
+            throw new Error('key가 필요합니다.');
+        }
+        if (!value) {
+            throw new Error(`${key}가 필요합니다.`);
+        }
         process.env[key] = value;
     }
 }
