@@ -1,0 +1,56 @@
+name: 'Automated Translation Development Post Distribution Application'
+description: 'Automated Translation Development Post Distribution Application'
+inputs:
+  GITHUB_REPOSITORY:
+    description: 'GitHub repository name'
+    required: true
+  GITHUB_USER:
+    description: 'GitHub user name'
+    required: true
+  GITHUB_TOKEN:
+    description: 'Upload Original/Translated Posts, via GitHub API'
+    required: true
+
+  GOOGLE_SHEET_ID:
+    description: 'Google Sheet ID'
+    required: true
+  GOOGLE_CLIENT_EMAIL:
+    description: 'Google Client Email'
+    required: true
+  GOOGLE_PRIVATE_KEY:
+    description: 'Google Private Key'
+    required: true
+
+  METHOD:
+    description: 'EXCUTE METHOD'
+    required: true
+    options:
+      - 'READ'
+      - 'PUBLISH'
+      - 'UPDATE_SPREAD_SHEET'
+
+runs:
+  using: 'node20'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up Node.js
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run start command with environment variables
+      run: |
+        npx cross-env \
+          GITHUB_REPOSITORY='${{ inputs.GITHUB_REPOSITORY }}' \
+          GITHUB_TOKEN='${{ inputs.GITHUB_TOKEN }}' \
+          GITHUB_OWNER='${{ inputs.GITHUB_OWNER }}' \
+          GITHUB_USER_EMAIL='${{ inputs.GITHUB_USER_EMAIL }}' \
+          GOOGLE_SHEET_ID='${{ inputs.GOOGLE_SHEET_ID }}' \
+          GOOGLE_CLIENT_EMAIL='${{ inputs.GOOGLE_CLIENT_EMAIL }}' \
+          GOOGLE_PRIVATE_KEY='${{ inputs.GOOGLE_PRIVATE_KEY }}' \
+          npm run start

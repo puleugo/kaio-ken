@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@actions/core": "^1.11.1",
     "@google-cloud/local-auth": "^2.1.0",
     "@octokit/core": "^6.1.2",
     "@octokit/rest": "^21.0.2",
