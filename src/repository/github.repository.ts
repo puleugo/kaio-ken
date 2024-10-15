@@ -17,9 +17,9 @@ export class GithubRepository implements GithubRepositoryInterface {
 
 	constructor(private readonly envValidator: EnvValidatorInterface) {
 	this.config = {
-			owner: this.envValidator.getOrThrow('GITHUB_OWNER'),
-			repo: this.envValidator.getOrThrow('GITHUB_REPOSITORY'),
-			auth: this.envValidator.getOrThrow('GITHUB_TOKEN'),
+			owner: this.envValidator.getOrThrow('GH_OWNER'),
+			repo: this.envValidator.getOrThrow('GH_REPOSITORY'),
+			auth: this.envValidator.getOrThrow('GH_TOKEN'),
 			branch: 'main',
 		};
 		this.referenceUrl = `https://api.github.com/repos/${this.config.owner}/${this.config.repo}/git/refs/heads/${this.config.branch}`;

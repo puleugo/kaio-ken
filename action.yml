@@ -1,13 +1,13 @@
 name: 'Automated Translation Development Post Distribution Application'
 description: 'Automated Translation Development Post Distribution Application'
 inputs:
-  GITHUB_REPOSITORY:
+  GH_REPOSITORY:
     description: 'GitHub repository name'
     required: true
-  GITHUB_USER:
+  GH_USER:
     description: 'GitHub user name'
     required: true
-  GITHUB_TOKEN:
+  GH_TOKEN:
     description: 'Upload Original/Translated Posts, via GitHub API'
     required: true
 
@@ -46,10 +46,9 @@ runs:
     - name: Run start command with environment variables
       run: |
         npx cross-env \
-          GITHUB_REPOSITORY='${{ inputs.GITHUB_REPOSITORY }}' \
-          GITHUB_TOKEN='${{ inputs.GITHUB_TOKEN }}' \
-          GITHUB_OWNER='${{ inputs.GITHUB_OWNER }}' \
-          GITHUB_USER_EMAIL='${{ inputs.GITHUB_USER_EMAIL }}' \
+          GH_REPOSITORY='${{ inputs.GH_REPOSITORY }}' \
+          GH_TOKEN='${{ inputs.GH_TOKEN }}' \
+          GH_OWNER='${{ inputs.GH_OWNER }}' \
           GOOGLE_SHEET_ID='${{ inputs.GOOGLE_SHEET_ID }}' \
           GOOGLE_CLIENT_EMAIL='${{ inputs.GOOGLE_CLIENT_EMAIL }}' \
           GOOGLE_PRIVATE_KEY='${{ inputs.GOOGLE_PRIVATE_KEY }}' \

@@ -18,9 +18,9 @@
 깃 액션에서도 다음과 같이 실행됩니다. 아래 변수들은 모두 랜덤한 값입니다.
 ```bash
 npm run build && npx cross-env \
-  GITHUB_REPOSITORY='kablog-test' \
-  GITHUB_TOKEN='ghp_HIUONDc7214nCXNIOUQW1r91' \
-  GITHUB_OWNER='puleugo' GITHUB_USER_EMAIL='puleugo@gmail.com' \
+  GH_REPOSITORY='kablog-test' \  # GITHUB_지 않는 이유는 GITHUB SECRET 명명 규칙과 충돌하기 때문입니다.
+  GH_TOKEN='ghp_HIUONDc7214nCXNIOUQW1r91' \
+  GH_OWNER='puleugo'\
   GOOGLE_SHEET_ID='jqhhqwui3127hiJwdiq2' \
   GOOGLE_CLIENT_EMAIL='kablog@kablog-128040912759243.iam.gserviceaccount.com' \
   GOOGLE_PRIVATE_KEY='-----BEGIN PRIVATE KEY-----\nqwduqwhifuqwehfiuhwifyugwquwfuyduebfwutjfqvu\nfgquyfgquiwyegfiqenbyuixfgcvbiufegcui\nqfygiuyubiwgucyvgbiuq\nfguqywegnciuvbgiuy\n-----END PRIVATE KEY-----\n' \

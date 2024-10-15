@@ -10,7 +10,7 @@ const methodObject = {
 const method =  core.getInput('METHOD') as keyof typeof methodObject;
 const isMethodExist = methodObject.hasOwnProperty(method);
 if (!isMethodExist) {
-	core.setFailed('Invalid method');
+	core.setFailed(`올바르지 않은 METHOD입니다. ${Object.keys(methodObject).join(', ')} 중 하나를 입력해주세요.`);
 } else {
 	methodObject[method]();
 }
