@@ -4,7 +4,9 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "build": "npx tsc",
+    "build:ts": "npx tsc",
+    "build:ncc": "ncc build dist/src/index.js -o dist",
+    "build": "npm run build:ts && npm run build:ncc",
     "start": "node dist/src/index.js",
     "test": "test"
   },
@@ -30,6 +32,7 @@
     "@types/node": "^22.5.4",
     "@types/uuid": "^10.0.0",
     "@types/xml2js": "^0.4.14",
+    "@vercel/ncc": "^0.38.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   },
