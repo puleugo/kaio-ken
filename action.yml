@@ -3,7 +3,7 @@ description: 'Automated Translation Development Post Distribution Application'
 
 runs:
   using: 'node20'
-  main: 'dist/src/index.js'
+  main: 'dist/index.js'
 
 inputs:
   GH_REPOSITORY:
