@@ -41,6 +41,6 @@ export const envValidator = new EnvValidator(githubActionLogger);
 envValidator.putOrThrow('GH_REPOSITORY', core.getInput('GH_REPOSITORY'));
 envValidator.putOrThrow('GH_TOKEN', core.getInput('GH_TOKEN'));
 envValidator.putOrThrow('GH_USER', core.getInput('GH_USER'));
-envValidator.putOrThrow('SPREAD_SHEET_ID', core.getInput('SPREAD_SHEET_ID'));
+envValidator.putOrThrow('GOOGLE_SHEET_ID', core.getInput('GOOGLE_SHEET_ID'));
 envValidator.putOrThrow('GOOGLE_CLIENT_EMAIL', core.getInput('GOOGLE_CLIENT_EMAIL'));
 envValidator.putOrThrow('GOOGLE_PRIVATE_KEY', core.getInput('GOOGLE_PRIVATE_KEY'));
