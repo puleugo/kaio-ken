@@ -11,8 +11,8 @@ export class EnvValidator implements EnvValidatorInterface{
 	getOrThrow(key: string): string {
 		let value = process.env[key];
 		if (!value) {
-			this.logger.error(`${key}가 필요합니다.`);
-			throw new Error(`${key}가 필요합니다.`);
+			this.logger.error(`${key}가 빈값입니다.`);
+			throw new Error(`${key}가 빈값입니다.`);
 		}
 		return value.replace(new RegExp("\\\\n", "\g"), "\n"); // 구글 인증 키에서 줄바꿈 문자를 처리하기 위함
 	}
@@ -27,8 +27,8 @@ export class EnvValidator implements EnvValidatorInterface{
 			throw new Error('key가 필요합니다.');
 		}
 		if (!value) {
-			this.logger.error(`${key}가 필요합니다.`);
-			throw new Error(`${key}가 필요합니다.`);
+			this.logger.error(`${key}에 빈값을 저장할 수 없습니다.`);
+			throw new Error(`${key}에 빈값을 저장할 수 없습니다.`);
 		}
 		process.env[key] = value;
 	}
