@@ -18,11 +18,11 @@
 깃 액션에서도 다음과 같이 실행됩니다. 아래 변수들은 모두 랜덤한 값입니다.
 ```bash
 npm run build && npx cross-env \
-  GH_REPOSITORY='kablog-test' \  # GITHUB_지 않는 이유는 GITHUB SECRET 명명 규칙과 충돌하기 때문입니다.
-  GH_TOKEN='ghp_HIUONDc7214nCXNIOUQW1r91' \
-  GH_OWNER='puleugo'\
-  GOOGLE_SHEET_ID='jqhhqwui3127hiJwdiq2' \
-  GOOGLE_CLIENT_EMAIL='kablog@kablog-128040912759243.iam.gserviceaccount.com' \
-  GOOGLE_PRIVATE_KEY='-----BEGIN PRIVATE KEY-----\nqwduqwhifuqwehfiuhwifyugwquwfuyduebfwutjfqvu\nfgquyfgquiwyegfiqenbyuixfgcvbiufegcui\nqfygiuyubiwgucyvgbiuq\nfguqywegnciuvbgiuy\n-----END PRIVATE KEY-----\n' \
+  GH_REPOSITORY='kablog-test' \  # GITHUB_이지 않는 이유는 GITHUB SECRET 명명 규칙과 충돌하기 때문입니다.
+  GH_TOKEN='ghp_tH1sF0rEx4mp1e' \
+  GH_USER='puleugo'\
+  GOOGLE_SHEET_ID='tHis1sN0tAV41ideKey' \
+  GOOGLE_CLIENT_EMAIL='kablog@kablog-1201120112011201.iam.gserviceaccount.com' \
+  GOOGLE_PRIVATE_KEY='-----BEGIN PRIVATE KEY-----\n_This_is_not_a_Real_Private_key\n_This_is_Just_for_example_\n_Im_Not_A_Baby\n_TY\n-----END PRIVATE KEY-----\n' \
   npm run start
 ```

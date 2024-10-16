@@ -1,7 +1,7 @@
 import {Posts} from "../domain/posts.js";
 import axios from "axios";
 import {envValidator, EnvValidatorInterface} from "../util/validator/env-validator.js";
-import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
+import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger.js";
 
 export interface GithubRepositoryInterface {
 	uploadPosts(newPosts: Posts): Promise<Posts>;
@@ -18,7 +18,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 
 	constructor(private readonly envValidator: EnvValidatorInterface, private readonly logger: LoggerInterface) {
 	this.config = {
-			owner: this.envValidator.getOrThrow('GH_OWNER'),
+			owner: this.envValidator.getOrThrow('GH_USER'),
 			repo: this.envValidator.getOrThrow('GH_REPOSITORY'),
 			auth: this.envValidator.getOrThrow('GH_TOKEN'),
 			branch: 'main',

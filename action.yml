@@ -8,10 +8,12 @@ runs:
 inputs:
   GH_REPOSITORY:
     description: 'GitHub repository name'
-    required: true
+    default: ${{ github.repository }}
+    required: false
   GH_USER:
     description: 'GitHub user name'
-    required: true
+    default: ${{ github.actor }}
+    required: false
   GH_TOKEN:
     description: 'Upload Original/Translated Posts, via GitHub API'
     required: true
