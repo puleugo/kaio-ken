@@ -9,7 +9,7 @@ export class EnvValidator implements EnvValidatorInterface{
 	constructor(private readonly logger: LoggerInterface) {}
 
 	getOrThrow(key: string): string {
-		this.logger.info(`${key}를 가져옵니다.`);
+		this.logger.debug(`${key}를 가져옵니다.`);
 		let value = process.env[key];
 		if (!value) {
 			this.logger.error(`${key}가 빈값입니다.`);
@@ -23,7 +23,7 @@ export class EnvValidator implements EnvValidatorInterface{
 	}
 
 	putOrThrow(key: string, value: string) {
-		this.logger.info(`환경변수 ${key}에 ${value}를 저장합니다.`);
+		this.logger.debug(`환경변수 ${key}에 ${value}를 저장합니다.`);
 		if (!key) {
 			this.logger.error('key가 필요합니다.');
 			throw new Error('key가 필요합니다.');

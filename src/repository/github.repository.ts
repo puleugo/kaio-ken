@@ -35,10 +35,10 @@ export class GithubRepository implements GithubRepositoryInterface {
 
 	async uploadPosts(newPosts: Posts): Promise<Posts> {
 		if (newPosts.length === 0){
-			this.logger.info('새로운 포스트가 없어 업로드를 진행하지 않습니다.');
+			this.logger.debug('새로운 포스트가 없어 업로드를 진행하지 않습니다.');
 			return newPosts
 		}
-		this.logger.info('새로운 포스트가 발견되어 업로드를 진행합니다.');
+		this.logger.debug('새로운 포스트가 발견되어 업로드를 진행합니다.');
 		const updateData = newPosts.subscribeFiles;
 
 		const { data: { object: { sha: currentCommitSha } } } = await axios({ url: this.referenceUrl, headers: this.headers });
@@ -58,7 +58,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 					)),
 			},
 		});
-		this.logger.info('마크다운 포스트 커밋 생성 완료');
+		this.logger.debug('마크다운 포스트 커밋 생성 완료');
 
 		const { data: { sha: newCommitSha } } = await axios({
 			url: this.commitUrl,
@@ -78,7 +78,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 			headers: this.headers,
 			data: { sha: newCommitSha },
 		});
-		this.logger.info('마크다운 포스트 업로드 완료');
+		this.logger.debug('마크다운 포스트 업로드 완료');
 
 		return newPosts;
 	}

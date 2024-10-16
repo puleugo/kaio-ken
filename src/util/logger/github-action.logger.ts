@@ -2,6 +2,8 @@
 export interface LoggerInterface {
 	error(message: string): void;
 
+	debug(message: string): void;
+
 	warning(message: string): void
 
 	info(message: string): void
@@ -12,6 +14,10 @@ export class GithubActionLogger implements LoggerInterface{
 
 	error(message: string) {
 		this.core.error(message)
+	}
+
+	debug(message: string) {
+		this.core.debug(message)
 	}
 
 	warning(message: string) {
