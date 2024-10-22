@@ -1,43 +1,31 @@
-import {SpreadSheetRepositoryInterface} from "../../src/repository/spread-sheet.repository.js";
-import {Posts} from "../../src/domain/posts.js";
-import {BlogEntity} from "../../src/domain/blog.entity.js";
+import { Blogs } from "../../src/domain/blogs";
+import { Posts } from "../../src/domain/posts";
+import {SpreadSheetRepositoryInterface} from "../../src/repository/spread-sheet.repository";
 
 export class SpreadSheetRepositoryStub implements SpreadSheetRepositoryInterface {
-	private _hasUpdatedPost: boolean = false;
+    private _blogs: Blogs;
+    private _posts: Posts;
+    private _readCount = 0;
+    set blogs(blogs: Blogs) {
+        this._blogs = blogs;
+    }
+    set posts(posts: Posts) {
+        this._posts = posts;
+    }
 
-	private _hasRead: boolean = false;
-
-	get hasRead(): boolean {
-		return this._hasRead;
-	}
-
-	private _hasUpdated: boolean = false;
-
-	get hasUpdated(): boolean {
-		return this._hasUpdated;
-	}
-
-	get hasReadPosts(): boolean {
-		return this._hasUpdatedPost;
-	}
-
-	async readPosts(): Promise<Posts> {
-		this._hasRead = true;
-		throw new Error("Method not implemented.");
-	}
-
-	async updateSubscribeBlog(posts: Posts): Promise<void> {
-		this._hasUpdatedPost = true;
-		throw new Error("Method not implemented.");
-	}
+    async readPosts(): Promise<Posts> {
+        return this._posts;
+    }
+    async readBlogs(): Promise<Blogs> {
+        this._readCount++;
+        return this._blogs;
+    }
+    updateSubscribeBlog(posts: Posts): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
 
 	reset() {
-		this._hasRead = false;
-		this._hasUpdatedPost = false;
-		this._hasUpdated = false;
-	}
-
-	async readSubscribeBlog(): Promise<BlogEntity> {
-		return new BlogEntity([]);
+        this._readCount = 0;
+        this.blogs = new Blogs([]);
 	}
 }

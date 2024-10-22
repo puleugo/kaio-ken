@@ -1,5 +1,5 @@
-import { Posts } from "../../src/domain/posts.js";
-import {TranslateClientInterface} from "./translateClientInterface.js";
+import { Posts } from "../../src/domain/posts";
+import {TranslateClientInterface} from "./translateClientInterface";
 
 export class TranslateClientStub implements TranslateClientInterface {
     translate(posts: Posts): Promise<Posts> {

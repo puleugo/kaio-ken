@@ -1,4 +1,4 @@
-import {RssResponse} from "../../src/type.js";
+import {RssResponse} from "../../src/type";
 import {fakerKO} from "@faker-js/faker";
 
 export class RssMother {

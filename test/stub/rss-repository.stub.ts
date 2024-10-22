@@ -1,26 +1,25 @@
-import {RssRepositoryInterface} from "../../src/repository/rss.repository.js";
-import {Posts} from "../../src/domain/posts.js";
+import {RssRepositoryInterface} from "../../src/repository/rss.repository";
+import {Posts} from "../../src/domain/posts";
 
 export class RssRepositoryStub implements RssRepositoryInterface {
-	private _posts: any[] = [];
+	private _posts: Posts;
+	private _readCount: number = 0;
 
-	set posts(posts: any) {
-		this._posts.push(posts);
+	set posts(posts: Posts) {
+		this._posts = posts;
 	}
 
-	private _hasRead: number = 0;
-
-	get hasRead(): number {
-		return this._hasRead;
+	get hasRead(): boolean {
+		return this._readCount > 0;
 	}
 
-	async readNewPosts(): Promise<Posts> {
-		this._hasRead++;
-		throw new Error("Method not implemented.");
+	async readPosts(): Promise<Posts> {
+		this._readCount++;
+		return this._posts;
 	}
 
 	reset() {
-		this._posts = [];
-		this._hasRead = 0;
+		this._posts = new Posts([]);
+		this._readCount = 0;
 	}
 }
