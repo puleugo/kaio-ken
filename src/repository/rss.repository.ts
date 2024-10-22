@@ -1,12 +1,12 @@
-import {Posts} from "../domain/posts.js";
-import {PostEntity} from "../domain/postEntity.js";
+import {Posts} from "../domain/posts";
+import {PostEntity} from "../domain/postEntity";
 import {XMLParser} from "fast-xml-parser";
-import {HrefTagEnum, RssResponse} from "../type.js";
-import {BlogEntity} from "../domain/blog.entity.js";
+import {HrefTagEnum, RssResponse} from "../type";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
+import {BlogEntity} from "../domain/blog.entity";
 
 export interface RssRepositoryInterface {
-	readNewPosts(blog: BlogEntity): Promise<Posts>;
+	readPosts(blog: BlogEntity): Promise<Posts>;
 }
 
 export class RssRepository implements RssRepositoryInterface {
@@ -14,7 +14,7 @@ export class RssRepository implements RssRepositoryInterface {
 	constructor(private readonly logger: LoggerInterface) {
 	}
 
-	async readNewPosts(blog: BlogEntity): Promise<Posts> {
+	async readPosts(blog: BlogEntity): Promise<Posts> {
 		this.logger.debug(`블로그 ${blog.title}(${blog.platform})의 새로운 포스트를 확인합니다.`);
 		const rssRaw = await fetch(blog.rssUrl);
 		const body = await rssRaw.text();
@@ -29,6 +29,7 @@ export class RssRepository implements RssRepositoryInterface {
 	}
 
 
+	// TODO: 파싱 시, index 주입할 필요없음.
 	private parsingTistoryRss(raw: RssResponse, startIndex: number): Posts {
 		this.logger.debug('티스토리 RSS를 파싱합니다.');
 		const rawPosts = raw.channel.item.sort((a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime());

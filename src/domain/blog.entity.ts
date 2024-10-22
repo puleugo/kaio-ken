@@ -1,22 +1,57 @@
-import {BlogPlatformEnum, HrefTagEnum, isBlogPlatformEnum, isHrefTageEnum} from "../type.js";
+import {BlogPlatformEnum, HrefTagEnum, isBlogPlatformEnum, isHrefTageEnum} from "../type";
 import dayjs from "dayjs";
+import {DateUtil} from "../util/util/DateUtil";
 
-interface BlogInterface {
+/**
+ * @typedef {('PUBLISHER'|'SUBSCRIBER'|'UNSUBSCRIBER')} blogType
+ * PUBLISHER: 원글 발행자
+ * SUBSCRIBER: 원글을 번역하여 배포하는 구독 블로그
+ * UNSUBSCRIBER: 번역글 자동 발행을 중단한 블로그
+ */
+type blogType = 'PUBLISHER' | 'SUBSCRIBER' | 'UNSUBSCRIBER';
+
+export interface BlogInterface {
 	title: string;
 	lastPublishedIndex: number;
 	lastPublishedAt: Date;
 	rssUrl: string;
 	platform: BlogPlatformEnum;
 	language: HrefTagEnum;
-	isPublisher: boolean;
+	type: blogType;
+}
+
+export interface BlogMetadata {
+	title: string;
+	platform: BlogPlatformEnum;
+	language: HrefTagEnum;
+	rssUrl: string;
+	lastPublishedIndex: number;
+	lastPublishedAt: string;
+	type: blogType;
 }
 
 export class BlogEntity{
+	get metadata(): BlogMetadata {
+		return {
+			title: this.value.title,
+			platform: this.value.platform,
+			language: this.value.language,
+			rssUrl: this.value.rssUrl,
+			lastPublishedIndex: this.value.lastPublishedIndex,
+			lastPublishedAt: DateUtil.formatYYYYMMDD(this.value.lastPublishedAt),
+			type: this.value.type
+		}
+	};
+	private value: BlogInterface;
+
 	get lastPublishedIndex(): number {
 		return this.value.lastPublishedIndex;
 	};
 	get isPublisher(): boolean {
-		return this.value.isPublisher
+		return this.value.type === 'PUBLISHER';
+	}
+	get isUnsubscriber(): boolean {
+		return this.value.type === 'UNSUBSCRIBER';
 	}
 	get rssUrl() {
 		return this.value.rssUrl;
@@ -28,10 +63,9 @@ export class BlogEntity{
 		return this.value.title;
 	}
 
-	private value: BlogInterface ;
 
 	get toValue() :any[] {
-		return [this.value.title, this.value.lastPublishedIndex, dayjs(this.value.lastPublishedAt).format('YYYY-MM-DD'), this.value.rssUrl, this.value.platform, this.value.language, this.value.isPublisher ? '=TRUE' : '=FALSE']
+		return [this.value.title, this.value.lastPublishedIndex, dayjs(this.value.lastPublishedAt).format('YYYY-MM-DD'), this.value.rssUrl, this.value.platform, this.value.language, this.value.type ? '=TRUE' : '=FALSE']
 	}
 
 	get isValidEntity(): boolean {
@@ -47,7 +81,6 @@ export class BlogEntity{
 		this.value.lastPublishedAt = new Date();
 	}
 
-
 	constructor(props: BlogInterface | string[]) {
 		if (Array.isArray(props)) {
 			if (props.length !== 7) {
@@ -61,13 +94,12 @@ export class BlogEntity{
 					rssUrl : props[3],
 					platform : props[4] as BlogPlatformEnum,
 					language : props[5] as HrefTagEnum,
-					isPublisher : Boolean(props[6]),
+					type : props[6] as blogType,
 				}
 
 			}
 			else if (BlogEntity.validateShouldInit(props))  // 최초 실행인 경우
 			{
-
 				this.value = {
 					title: props[0],
 					lastPublishedIndex: 0,
@@ -75,7 +107,7 @@ export class BlogEntity{
 					rssUrl: props[3],
 					platform: props[4] as BlogPlatformEnum,
 					language: props[5] as HrefTagEnum,
-					isPublisher: Boolean(props[6]),
+					type: props[6] as blogType,
 				}
 			}
 			else {
@@ -89,7 +121,7 @@ export class BlogEntity{
 				rssUrl : props.rssUrl,
 				platform : props.platform,
 				language : props.language,
-				isPublisher : props.isPublisher,
+				type : props.type,
 			};
 
 		}
@@ -108,13 +140,13 @@ export class BlogEntity{
 		if (props[3] === undefined || props[3].length <= 0) {
 			return false;
 		}
-		if (props[4] === undefined || !isBlogPlatformEnum(props[4])) {
+		if (!isBlogPlatformEnum(props[4])) {
 			return false;
 		}
-		if (props[5] === undefined || !isHrefTageEnum(props[5])) {
+		if (!isHrefTageEnum(props[5])) {
 			return false;
 		}
-		if (props[6] === undefined || props[6] !== 'TRUE' && props[6] !== 'FALSE') {
+		if (!BlogEntity.validateBlogType(props[6])) {
 			return false;
 		}
 		return true;
@@ -139,9 +171,13 @@ export class BlogEntity{
 		if (!isHrefTageEnum(props[5])) { // 반드시 차있어야함.
 			return false;
 		}
-		if (props[6] !== 'TRUE' && props[6] !== 'FALSE') { // 반드시 차있어야함.
+		if (!BlogEntity.validateBlogType(props[6])) { // 반드시 차있어야함.
 			return false;
 		}
 		return true;
+	}
+
+	private static validateBlogType(raw: string) {
+		return raw !== undefined && (raw === 'PUBLISHER' || raw === 'SUBSCRIBE' || raw === 'UNSUBSCRIBE');
 	}
 }

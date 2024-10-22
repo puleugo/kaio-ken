@@ -1,14 +1,31 @@
-import {BlogEntity} from "./blog.entity.js";
+import {BlogEntity, BlogMetadata} from "./blog.entity";
 import {sheets_v4} from "googleapis";
+
+export type BlogsMetadata = Array<BlogMetadata>;
 
 export class Blogs {
 	private blogs: BlogEntity[];
 
-	constructor(values: string[][]) {
-		this.blogs = values.map((value) => new BlogEntity(value)).filter(blog => blog.isValidEntity);
+	constructor(values: string[][] | BlogEntity[]) {
+		let blogs: BlogEntity[] = [];
+		if (values.length === 0) {
+			this.blogs = [];
+		}
+		else if (values[0] instanceof BlogEntity) {
+			blogs = values as BlogEntity[];
+		}
+		else {
+			blogs = values.map((value) => new BlogEntity(value)).filter(blog => blog.isValidEntity);
+		}
+		blogs = blogs.filter(blog => !blog.isUnsubscriber);
+		const publisherBlogs = blogs.filter(blog => blog.isPublisher);
+		if (publisherBlogs.length > 1) {
+			throw new Error(`Publisher 블로그는 1개만 존재해야합니다. ${blogs.map(blog => blog.title).join(',')} 중 하나만 선택해주세요.`);
+		}
+		this.blogs = blogs;
 	}
 
-	get subscribeBlog(): BlogEntity | null {
+	get publisherBlog(): BlogEntity | null {
 		const publishBlog = this.blogs.find(blog => blog.isPublisher);
 		return publishBlog ?? null;
 	}
@@ -23,6 +40,11 @@ export class Blogs {
 	get length() {
 		return this.blogs.length;
 	}
+
+	get metadata(): BlogsMetadata {
+		return this.blogs.map(blog => blog.metadata);
+	};
+
 	update(updateBlog: BlogEntity) {
 		const index =this.blogs.findIndex((blog) => blog.rssUrl === updateBlog.rssUrl);
 		if (index === -1) {

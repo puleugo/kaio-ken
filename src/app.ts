@@ -1,25 +1,21 @@
-import {githubClient, GithubRepositoryInterface} from "./repository/github.repository.js";
-import {spreadSheetUploader, SpreadSheetUploaderInterface} from "./implemention/spread-sheet.uploader.js";
-import {rssSearcher, RssSearcherClientInterface} from "./implemention/rss.searcher";
+import {spreadSheetUploader, SpreadSheetUploaderInterface} from "./implemention/spread-sheet.uploader";
+import {rssReader, RssReaderInterface} from "./implemention/rss.reader";
+import {githubUploader, GithubUploaderInterface} from "./implemention/github.uploader";
 
 export class App {
 	constructor(
-		private readonly githubClient: GithubRepositoryInterface,
-		private readonly spreadSheetClient: SpreadSheetUploaderInterface,
+		private readonly githubUploader: GithubUploaderInterface,
+		private readonly spreadSheetUploader: SpreadSheetUploaderInterface,
 		// private readonly translateClient: TranslateClientInterface,
 		// private readonly qiitaClient: PostWriteClientInterface,
-		private readonly rssSearchClient: RssSearcherClientInterface
+		private readonly rssReader: RssReaderInterface
 	) {
 	}
 
-	// TODO: 동일 글이 여러번 업로드 될 수 있는 문제 해결
-	// TODO: 이미지 업로드
-	// TODO: RSS를 통해 얻을 수 없는 옛 글 처리
 	async generateOriginalPost() {
-		const newPosts = await this.rssSearchClient.searchNew();
-		if (newPosts.isEmpty) return;
-		const uploadedPosts = await this.githubClient.uploadPosts(newPosts);
-		await this.spreadSheetClient.fetchPosts(uploadedPosts);
+		const [newPosts, blog] = await this.rssReader.readBlogsAndPosts();
+		const metadata = await this.githubUploader.uploadPosts(newPosts, blog);
+		await this.spreadSheetUploader.fetchPosts(metadata);
 	}
 
 	// async uploadPosts() {
@@ -36,4 +32,4 @@ export class App {
 	async updateSpreadSheetSettings() {}
 }
 
-export const app = new App(githubClient, spreadSheetUploader, rssSearcher)
+export const app = new App(githubUploader, spreadSheetUploader, rssReader)

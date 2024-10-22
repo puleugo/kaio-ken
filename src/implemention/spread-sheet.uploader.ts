@@ -1,10 +1,11 @@
-import {Posts} from "../domain/posts.js";
-import {spreadSheetRepository, SpreadSheetRepositoryInterface} from "../repository/spread-sheet.repository.js";
+import {Posts} from "../domain/posts";
+import {spreadSheetRepository, SpreadSheetRepositoryInterface} from "../repository/spread-sheet.repository";
+import {Metadata} from "../domain/metadata";
 
 export interface SpreadSheetUploaderInterface {
 	readPosts(): Promise<Posts>;
 
-	fetchPosts(translatedPosts: Posts): Promise<void>;
+	fetchPosts(metadata: Metadata): Promise<void>;
 }
 
 export class SpreadSheetUploader implements SpreadSheetUploaderInterface {
@@ -15,8 +16,8 @@ export class SpreadSheetUploader implements SpreadSheetUploaderInterface {
 		throw new Error("Method not implemented.");
 	}
 
-	async fetchPosts(posts: Posts): Promise<void> {
-		await this.spreadSheetRepository.updateSubscribeBlog(posts);
+	async fetchPosts(metadata: Metadata): Promise<void> {
+		await this.spreadSheetRepository.updateSubscribeBlog(metadata.postsCollection);
 	}
 }
 
