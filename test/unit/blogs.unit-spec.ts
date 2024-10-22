@@ -8,13 +8,19 @@ describe('Blogs Unit Test', () => {
 		expect(() => new Blogs(rawBlogs)).toThrow();
 	})
 	it('UnSubscriber는 변환하지 않는다.', () => {
-		const blogs = new Blogs([BlogMother.create({type: 'UNSUBSCRIBER'})]);
-		expect(blogs.length).toBe(0);
+		const blogs = new Blogs([BlogMother.create({type:'PUBLISHER'}),BlogMother.create({type: 'UNSUBSCRIBER'})]);
+		expect(blogs.length).toBe(1);
 	})
 
 	it('SpreadSheet에서 읽어온 값으로 생성된다.', () => {
 		const rawBlogs = [SpreadSheetMother.BlogRow];
 		const blogs = new Blogs(rawBlogs);
 		expect(blogs.length).toBe(1);
+	})
+
+	it('SpreadSheet에서 읽어온 값으로 생성된다.', () => {
+		const rawBlogs = [SpreadSheetMother.BlogRow];
+		const publisherBlog = new Blogs(rawBlogs).publisherBlog;
+		expect(publisherBlog).not.toBeNull()
 	})
 })
