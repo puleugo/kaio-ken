@@ -90,11 +90,11 @@ export class BlogEntity{
 
 	constructor(props: BlogInterface | string[]) {
 		if (Array.isArray(props)) {
-			if (props.length !== 7) {
+			if (props.length !== 6) {
 				return;
 			}
 			if (BlogEntity.validBlog(props)) { // 이미 1회 이상 갱신된 블로그
-				this.value ={
+				this.value = {
 					title: props[0],
 					lastPublishedIndex: Number(props[1]),
 					lastPublishedAt: new Date(props[2]),
