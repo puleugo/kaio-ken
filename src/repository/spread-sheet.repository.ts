@@ -79,7 +79,9 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 		if (!values) {
 			throw new Error('블로그 시트에 데이터가 없습니다.');
 		}
+		this.logger.debug('블로그 정보를 읽어왔습니다.')
 		const blogs = new Blogs(values)
+		this.logger.debug(`${blogs.length}개의 블로그 정보를 파싱했습니다.`)
 		const subscribeBlog = blogs.publisherBlog;
 		if (!subscribeBlog) {
 			throw new Error('발행 블로그로 설정된 블로그가 없습니다. 발행 블로그를 \'PUBLISHER\'으로 설정해주세요.');
