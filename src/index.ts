@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import {app} from "./app";
-import {envValidator} from "./util/validator/env-validator";
+import {envValidator} from "./util/config/env-manager";
 
 if (process.env.NODE_ENV !== 'test') {
 	envValidator.putOrThrow('GH_REPOSITORY', core.getInput('GH_REPOSITORY'));
@@ -10,7 +10,6 @@ if (process.env.NODE_ENV !== 'test') {
 	envValidator.putOrThrow('GOOGLE_CLIENT_EMAIL', core.getInput('GOOGLE_CLIENT_EMAIL'));
 	envValidator.putOrThrow('GOOGLE_PRIVATE_KEY', core.getInput('GOOGLE_PRIVATE_KEY'));
 }
-
 
 const methodObject = {
 	'READ': () => app.generateOriginalPost(),

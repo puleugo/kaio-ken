@@ -1,6 +1,6 @@
 import {Posts} from "../domain/posts";
 import axios from "axios";
-import {envValidator, EnvValidatorInterface} from "../util/validator/env-validator";
+import {envValidator, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import {GithubUploadFile} from "../domain/github-upload-files";
 import {Metadata} from "../domain/metadata";
@@ -20,7 +20,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 	private readonly MODES = { FILE: '100644', FOLDER: '040000' };
 	private readonly TYPE = { BLOB: 'blob', TREE: 'tree' };
 
-	constructor(private readonly envValidator: EnvValidatorInterface, private readonly logger: LoggerInterface) {}
+	constructor(private readonly envValidator: EnvManagerInterface, private readonly logger: LoggerInterface) {}
 
 	authenticateIfNeeded() {
 		this.config = {

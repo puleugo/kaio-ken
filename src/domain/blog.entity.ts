@@ -42,6 +42,13 @@ export class BlogEntity{
 			type: this.value.type
 		}
 	};
+	private readonly blogLanguageMap = new Map<BlogPlatformEnum, HrefTagEnum>([
+		[BlogPlatformEnum.Tistory, HrefTagEnum.Korean],
+		[BlogPlatformEnum.Velog, HrefTagEnum.Korean],
+		[BlogPlatformEnum.Medium, HrefTagEnum.English],
+		[BlogPlatformEnum.Qiita, HrefTagEnum.Japanese],
+	]);
+
 	private value: BlogInterface;
 
 	get lastPublishedIndex(): number {
@@ -88,15 +95,14 @@ export class BlogEntity{
 			}
 			if (BlogEntity.validBlog(props)) { // 이미 1회 이상 갱신된 블로그
 				this.value ={
-					title : props[0],
-					lastPublishedIndex : Number(props[1]),
-					lastPublishedAt : new Date(props[2]),
-					rssUrl : props[3],
-					platform : props[4] as BlogPlatformEnum,
-					language : props[5] as HrefTagEnum,
-					type : props[6] as blogType,
+					title: props[0],
+					lastPublishedIndex: Number(props[1]),
+					lastPublishedAt: new Date(props[2]),
+					rssUrl: props[3],
+					platform: props[4] as BlogPlatformEnum,
+					language: this.blogLanguageMap.get(props[4] as BlogPlatformEnum),
+					type: props[5] as blogType,
 				}
-
 			}
 			else if (BlogEntity.validateShouldInit(props))  // 최초 실행인 경우
 			{
@@ -106,8 +112,8 @@ export class BlogEntity{
 					lastPublishedAt: new Date(new Date().setFullYear(new Date().getFullYear() + 100)),
 					rssUrl: props[3],
 					platform: props[4] as BlogPlatformEnum,
-					language: props[5] as HrefTagEnum,
-					type: props[6] as blogType,
+					language: this.blogLanguageMap.get(props[4] as BlogPlatformEnum),
+					type: props[5] as blogType,
 				}
 			}
 			else {
@@ -143,10 +149,7 @@ export class BlogEntity{
 		if (!isBlogPlatformEnum(props[4])) {
 			return false;
 		}
-		if (!isHrefTageEnum(props[5])) {
-			return false;
-		}
-		if (!BlogEntity.validateBlogType(props[6])) {
+		if (!BlogEntity.validateBlogType(props[5])) { // 반드시 차있어야함.
 			return false;
 		}
 		return true;
@@ -168,10 +171,7 @@ export class BlogEntity{
 		if (!isBlogPlatformEnum(props[4])) { // 반드시 차있어야함.
 			return false;
 		}
-		if (!isHrefTageEnum(props[5])) { // 반드시 차있어야함.
-			return false;
-		}
-		if (!BlogEntity.validateBlogType(props[6])) { // 반드시 차있어야함.
+		if (!BlogEntity.validateBlogType(props[5])) { // 반드시 차있어야함.
 			return false;
 		}
 		return true;

@@ -1,7 +1,7 @@
 import {Posts} from "../domain/posts";
 import {google} from "googleapis";
 import {Blogs} from "../domain/blogs";
-import {envValidator, EnvValidatorInterface} from "../util/validator/env-validator";
+import {envValidator, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 
 export interface SpreadSheetRepositoryInterface {
@@ -17,7 +17,7 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 	private auth = null;
 	private sheetApi = null;
 	private spreadsheetId: string;
-	constructor(private readonly envValidator: EnvValidatorInterface, private readonly logger: LoggerInterface) {}
+	constructor(private readonly envValidator: EnvManagerInterface, private readonly logger: LoggerInterface) {}
 
 	authenticateIfNeeded() {
 		if (this.auth && this.sheetApi) {
@@ -82,7 +82,7 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 		const blogs = new Blogs(values)
 		const subscribeBlog = blogs.publisherBlog;
 		if (!subscribeBlog) {
-			throw new Error('발행 블로그로 설정된 블로그가 없습니다. 발행 블로그 여부를 TRUE로 설정해주세요.');
+			throw new Error('발행 블로그로 설정된 블로그가 없습니다. 발행 블로그를 \'PUBLISHER\'으로 설정해주세요.');
 		}
 		return blogs;
 	}
