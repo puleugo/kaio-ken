@@ -72,7 +72,7 @@ export class BlogEntity{
 
 
 	get toValue() :any[] {
-		return [this.value.title, this.value.lastPublishedIndex, dayjs(this.value.lastPublishedAt).format('YYYY-MM-DD'), this.value.rssUrl, this.value.platform, this.value.language, this.value.type ? '=TRUE' : '=FALSE']
+		return [this.value.title, this.value.lastPublishedIndex, DateUtil.formatYYYYMMDD(this.value.lastPublishedAt), this.value.rssUrl, this.value.platform, this.value.language, this.value.type]
 	}
 
 	get isValidEntity(): boolean {
