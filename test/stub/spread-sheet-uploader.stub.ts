@@ -1,5 +1,6 @@
 import {Posts} from "../../src/domain/posts";
 import {SpreadSheetUploaderInterface} from "../../src/implemention/spread-sheet.uploader";
+import {Metadata} from "../../src/domain/metadata";
 
 export class SpreadSheetUploaderStub implements SpreadSheetUploaderInterface {
 	private _readCount: number = 0;
@@ -15,7 +16,7 @@ export class SpreadSheetUploaderStub implements SpreadSheetUploaderInterface {
 		return new Posts([]);
 	}
 
-	async fetchPosts(translatedPosts: Posts): Promise<void> {
+	async fetchPosts(metadata: Metadata): Promise<void> {
 		this._uploadCount++;
 		return;
 	}
