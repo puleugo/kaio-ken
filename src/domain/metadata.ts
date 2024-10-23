@@ -3,6 +3,7 @@ import {Blogs, BlogsMetadata} from "./blogs";
 import {GithubUploadFile} from "./github-upload-files";
 import {PostEntity} from "./postEntity";
 import {DateUtil} from "../util/util/DateUtil";
+import {BlogEntity} from "./blog.entity";
 
 interface JsonConstructor  {
 	posts: PostsMetadata;
@@ -17,6 +18,10 @@ interface DomainConstructor {
 export class Metadata {
 	static path = 'metadata.json';
 	private value: JsonConstructor;
+	get publishBlog(): BlogEntity{
+		const blogMetadata = this.value.blogs.find(blog => blog.type === 'PUBLISHER');
+		return new BlogEntity({...blogMetadata, lastPublishedAt: new Date(blogMetadata.lastPublishedAt)});
+	}
 	constructor(props: JsonConstructor | DomainConstructor) {
 		if (props.posts instanceof Posts && props.blogs instanceof Blogs) { // DomainConstructor
 			this.value = {
@@ -44,7 +49,7 @@ export class Metadata {
 	}
 
 	get json(): string {
-		return JSON.stringify(this.value)
+		return JSON.stringify(this.value, null, 2)
 	}
 
 	get lastExecutedAt(): Date {
@@ -52,11 +57,12 @@ export class Metadata {
 	}
 
 	get postsCollection(): Posts {
-		const posts = new Posts([]);
+		const posts: PostEntity[] = [];
 		for (const [index, value] of Object.entries(this.value.posts)) {
 			posts.push(PostEntity.fromMetadata(Number(index), value));
 		}
-		return posts;
+
+		return new Posts(posts);
 	}
 
 	get githubUploadFile(): GithubUploadFile {

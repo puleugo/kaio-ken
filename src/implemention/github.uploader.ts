@@ -15,12 +15,12 @@ export class GithubUploader implements GithubUploaderInterface{
 
 	async uploadPosts(newPosts: Posts, blogs: Blogs): Promise<Metadata> {
 		if (newPosts.length === 0){
-			this.logger.debug('새로운 포스트가 없어 업로드를 진행하지 않습니다.');
-			return null;
+			throw new Error('새로운 포스트가 없어 업로드를 진행하지 않습니다.');
 		}
 		this.logger.debug('새로운 포스트가 발견되어 업로드를 진행합니다.');
 		const jsonString = await this.githubRepository.readOrNull(Metadata.path);
 		const metadata: Metadata = jsonString ? new Metadata(JSON.parse(jsonString)) : new Metadata({posts: newPosts, blogs});
+
 		await this.githubRepository.upload(
 			new GithubUploadFileBuilder()
 				.addPosts(newPosts)

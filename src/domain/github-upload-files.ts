@@ -29,17 +29,16 @@ export class GithubUploadFileBuilder {
 
 	build(): GithubUploadFile[] {
 		if (!this.metadata) {
-			new Metadata({posts: this.newPosts.metadata, blogs: this.blogs.metadata, lastExecutedAt: DateUtil.nowFormatYYYYMMDD}).githubUploadFile;
-			return new Posts([], this.blogs.publisherBlog).toGithubUploadFiles;
+			const metadata = new Metadata({posts: this.newPosts, blogs: this.blogs}).githubUploadFile;
+			const newPosts = this.newPosts.toGithubUploadFiles;
+			return [...newPosts, metadata];
 		}
-		const lastExecutedAt = this.metadata.lastExecutedAt;
-		const newPosts = this.newPosts.filterNewPosts(lastExecutedAt).toGithubUploadFiles;
+		const newPosts = this.newPosts.toGithubUploadFiles;
 		this.metadata.update(
 			this.newPosts,
 			this.blogs
 		);
 
-
-		return [this.metadata.githubUploadFile, ...newPosts];
+		return [...newPosts, this.metadata.githubUploadFile];
 	}
 }
