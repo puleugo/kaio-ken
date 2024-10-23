@@ -2,12 +2,19 @@ import {App} from "../../src/app";
 import {githubUploader} from "../../src/implemention/github.uploader";
 import {spreadSheetUploader} from "../../src/implemention/spread-sheet.uploader";
 import {rssReader} from "../../src/implemention/rss.reader";
+import {envManager} from "../../src/util/config/env-manager";
+import 'dotenv/config'
 
-// TODO: .env
 describe('Application e2e test', () => {
 	let app: App;
 
 	beforeEach(() => {
+		envManager.putOrThrow('GH_REPOSITORY', process.env['GH_REPOSITORY']);
+		envManager.putOrThrow('GH_TOKEN', process.env['GH_TOKEN']);
+		envManager.putOrThrow('GH_USER', process.env['GH_USER']);
+		envManager.putOrThrow('GOOGLE_SHEET_ID', process.env['GOOGLE_SHEET_ID']);
+		envManager.putOrThrow('GOOGLE_CLIENT_EMAIL', process.env['GOOGLE_CLIENT_EMAIL']);
+		envManager.putOrThrow('GOOGLE_PRIVATE_KEY', process.env['GOOGLE_PRIVATE_KEY']);
 		app = new App(
 			githubUploader,
 			spreadSheetUploader,
@@ -21,7 +28,7 @@ describe('Application e2e test', () => {
 
 	describe('발행 게시글로부터 원본 게시글 생성', () => {
 		it('게시글이 없으면 Github에 업로드하지 않는다.', async () => {
-			// await app.generateOriginalPost();
+			await app.generateOriginalPost();
 		})
 		it('게시글이 없으면 SpreadSheet에 업로드하지 않는다.', async () => {
 			// await app.generateOriginalPost();
