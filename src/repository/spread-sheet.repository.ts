@@ -1,15 +1,16 @@
 import {Posts} from "../domain/posts";
 import {google} from "googleapis";
 import {Blogs} from "../domain/blogs";
-import {envValidator, EnvManagerInterface} from "../util/config/env-manager";
+import {envManager, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
+import {BlogEntity} from "../domain/blog.entity";
 
 export interface SpreadSheetRepositoryInterface {
 	readPosts(): Promise<Posts>;
 
 	readBlogs(): Promise<Blogs>
 
-	updateSubscribeBlog(posts: Posts): Promise<void>;
+	updateSubscribeBlog(posts: Posts, publisherBlog: BlogEntity): Promise<void>;
 }
 
 
@@ -45,7 +46,7 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 		return new Posts([]);
 	}
 
-	async updateSubscribeBlog(posts: Posts): Promise<void> {
+	async updateSubscribeBlog(posts: Posts, publisherBlog: BlogEntity): Promise<void> {
 		this.authenticateIfNeeded();
 		const rawBlogs  = await this.sheetApi.get({
 			range: 'Blogs!A2:G100',
@@ -56,7 +57,7 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 			throw new Error('갱신할 블로그가 스프레드 시트에서 사라졌습니다. 스프레드 시트를 확인 후 다시 실행해주세요.');
 		}
 		const blogs = new Blogs(values);
-		blogs.update(posts.blog)
+		blogs.update(publisherBlog)
 
 		await this.sheetApi.batchUpdate({
 			spreadsheetId: this.spreadsheetId,
@@ -91,4 +92,4 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 }
 
 
-export const spreadSheetRepository = new SpreadSheetRepository(envValidator, githubActionLogger);
+export const spreadSheetRepository = new SpreadSheetRepository(envManager, githubActionLogger);

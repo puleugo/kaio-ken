@@ -33,4 +33,4 @@ export class EnvManager implements EnvManagerInterface{
 	}
 }
 
-export const envValidator = new EnvManager(githubActionLogger);
+export const envManager = new EnvManager(githubActionLogger);

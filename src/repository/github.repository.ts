@@ -1,6 +1,6 @@
 import {Posts} from "../domain/posts";
 import axios from "axios";
-import {envValidator, EnvManagerInterface} from "../util/config/env-manager";
+import {envManager, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import {GithubUploadFile} from "../domain/github-upload-files";
 import {Metadata} from "../domain/metadata";
@@ -23,6 +23,9 @@ export class GithubRepository implements GithubRepositoryInterface {
 	constructor(private readonly envValidator: EnvManagerInterface, private readonly logger: LoggerInterface) {}
 
 	authenticateIfNeeded() {
+		if (this.config) {
+			return;
+		}
 		this.config = {
 			owner: this.envValidator.getOrThrow('GH_USER'),
 			repo: this.envValidator.getOrThrow('GH_REPOSITORY'),
@@ -39,11 +42,14 @@ export class GithubRepository implements GithubRepositoryInterface {
 		};
 	}
 
-	getTreeReadUrl(treeSha: string) {
-		return `${this.githubApiUrl}/repos/${this.config.owner}/${this.config.repo}/git/trees/${treeSha}`;
+	getFileContentPath(filePath: string) {
+		return `${this.githubApiUrl}/repos/${this.config.owner}/${this.config.repo}/contents/${filePath}`;
 	}
 
 	async upload(files: GithubUploadFile[]): Promise<Metadata> {
+		if (files.length === 0) {
+			throw new Error('업로드할 글이 없습니다.');
+		}
 		this.authenticateIfNeeded();
 		const { data: { object: { sha: currentCommitSha } } } = await axios({ url: this.referenceUrl, headers: this.headers });
 		const currentCommitUrl = `${this.commitUrl}/${currentCommitSha}`;
@@ -85,11 +91,11 @@ export class GithubRepository implements GithubRepositoryInterface {
 		this.logger.debug('마크다운 포스트 업로드 완료');
 
 		const {data} = await axios({
-			url: this.getTreeReadUrl(newTreeSha),
+			url: this.getFileContentPath(Metadata.path),
 			headers: this.headers,
 		});
-		const rawMetadata = data.tree.find((file: { path: string; }) => file.path === Metadata.path);
-		return new Metadata(JSON.parse(rawMetadata.content));
+		const rawMetadata = Buffer.from(data.content, 'base64').toString();
+		return new Metadata(JSON.parse(rawMetadata));
 	}
 
 	async readOrNull(filePath: string): Promise<string | null> {
@@ -107,4 +113,4 @@ export class GithubRepository implements GithubRepositoryInterface {
 
 
 
-export const githubRepository = new GithubRepository(envValidator, githubActionLogger);
+export const githubRepository = new GithubRepository(envManager, githubActionLogger);
