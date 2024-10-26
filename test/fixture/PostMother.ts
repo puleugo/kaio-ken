@@ -12,7 +12,7 @@ export class PostMother {
 			uploadedAt: DateUtil.formatYYYYMMDD(fakerKO.date.past()),
 			hasUploadedOnGithub: false,
 			originUrl: fakerKO.internet.url(),
-			language: fakerKO.helpers.enumValue(HrefTagEnum),
+			language: HrefTagEnum.Korean,
 		}, props), props?.index);
 	};
 

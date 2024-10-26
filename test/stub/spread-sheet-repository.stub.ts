@@ -20,7 +20,7 @@ export class SpreadSheetRepositoryStub implements SpreadSheetRepositoryInterface
         this._readCount++;
         return this._blogs;
     }
-    updateSubscribeBlog(posts: Posts): Promise<void> {
+    updatePublisherBlog(posts: Posts): Promise<void> {
         throw new Error("Method not implemented.");
     }
 

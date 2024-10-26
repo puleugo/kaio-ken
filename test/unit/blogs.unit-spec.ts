@@ -13,13 +13,13 @@ describe('Blogs Unit Test', () => {
 	})
 
 	it('SpreadSheet에서 읽어온 값으로 생성된다.', () => {
-		const rawBlogs = [SpreadSheetMother.BlogRow];
+		const rawBlogs = [SpreadSheetMother.publisherBlogRow];
 		const blogs = new Blogs(rawBlogs);
 		expect(blogs.length).toBe(1);
 	})
 
 	it('SpreadSheet에서 읽어온 값으로 생성된다.', () => {
-		const rawBlogs = [SpreadSheetMother.BlogRow];
+		const rawBlogs = [SpreadSheetMother.publisherBlogRow];
 		const publisherBlog = new Blogs(rawBlogs).publisherBlog;
 		expect(publisherBlog).not.toBeNull()
 	})

@@ -1,4 +1,4 @@
-import {RssReader, RssReaderInterface} from "../../src/implemention/rss.reader";
+import {RssReader, OriginalContentsReaderInterface} from "../../src/implemention/rss.reader";
 import {RssRepositoryStub} from "../stub/rss-repository.stub";
 import {SpreadSheetRepositoryStub} from "../stub/spread-sheet-repository.stub";
 import {PostMother} from "../fixture/PostMother";
@@ -7,7 +7,7 @@ import {Blogs} from "../../src/domain/blogs";
 import {Posts} from "../../src/domain/posts";
 
 describe('RssReader Integration Test', () => {
-	let rssReader: RssReaderInterface;
+	let rssReader: OriginalContentsReaderInterface;
 	let rssRepositoryStub: RssRepositoryStub;
 	let spreadSheetRepositoryStub: SpreadSheetRepositoryStub
 
