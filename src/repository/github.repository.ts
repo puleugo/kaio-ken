@@ -8,6 +8,7 @@ import {Metadata} from "../domain/metadata";
 export interface GithubRepositoryInterface {
 	upload(files: GithubUploadFile[]): Promise<Metadata>;
 	readOrNull(filePath: string): Promise<string>;
+	deleteFile(filePath: string): void;
 }
 
 export class GithubRepository implements GithubRepositoryInterface {
@@ -67,6 +68,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 							: { path, sha: null, mode: this.MODES.FILE, type: this.TYPE.BLOB } // If sha is null => the file gets deleted
 					)),
 			},
+			validateStatus: (status =>  status < 500)
 		});
 		this.logger.debug('마크다운 포스트 커밋 생성 완료');
 
@@ -79,6 +81,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 				tree: newTreeSha,
 				parents: [ currentCommitSha ],
 			},
+			validateStatus: (status =>  status < 500)
 		});
 
 		// Make BRANCH_NAME point to the created commit
@@ -87,12 +90,14 @@ export class GithubRepository implements GithubRepositoryInterface {
 			method: 'POST',
 			headers: this.headers,
 			data: { sha: newCommitSha },
+			validateStatus: (status =>  status < 500)
 		});
 		this.logger.debug('마크다운 포스트 업로드 완료');
 
 		const {data} = await axios({
 			url: this.getFileContentPath(Metadata.path),
 			headers: this.headers,
+			validateStatus: (status =>  status < 500)
 		});
 		const rawMetadata = Buffer.from(data.content, 'base64').toString();
 		return new Metadata(JSON.parse(rawMetadata));
@@ -100,14 +105,66 @@ export class GithubRepository implements GithubRepositoryInterface {
 
 	async readOrNull(filePath: string): Promise<string | null> {
 		this.authenticateIfNeeded();
-		return '';
+		const {status, data} = await axios({
+			url: this.getFileContentPath(filePath),
+			headers: this.headers,
+			validateStatus: (status => status < 500)
+		})
+		if (status === 404) {
+			return null
+		} else if (status == 200) {
+			return Buffer.from(data.content, 'base64').toString();
+		}
 	}
 
+	async getFilesInDirectory(path: string) {
+		this.authenticateIfNeeded();
+		const response = await axios({
+			url: this.getFileContentPath(path),
+			headers: this.headers,
+			validateStatus: (status =>  status < 500)
+		});
+		return response.data;
+	}
 
-	private generateMetadataJson(posts: Posts) {
-		return {
-			posts: posts
+	async deleteFile(path: string, sha?: string) {
+		this.authenticateIfNeeded();
+		if (!sha) {
+			const result = await axios({
+				url: this.getFileContentPath(path),
+				headers: this.headers,
+				validateStatus: (status =>  status < 500)
+			});
+			sha = result.data.sha;
 		}
+
+		// delete file
+		await axios({
+			url: this.getFileContentPath(path),
+			method: 'DELETE',
+			headers: this.headers,
+			data: {
+				message: 'truncated',
+				content: null,
+				sha: sha,
+			},
+			validateStatus: (status =>  status < 500)
+		});
+		this.logger.debug(`${path} 삭제 완료`);
+		return;
+	}
+
+	async deleteDirectory(path: string) {
+		const files = await this.getFilesInDirectory(path)
+		for (const file of files) {
+			if (file.type === 'file') {
+				await this.deleteFile(file.path, file.sha);
+			} else if (file.type === 'dir') {
+				// 하위 directory가 있는 경우 재귀적으로 삭제
+				await this.deleteDirectory(file.path);
+			}
+		}
+		return;
 	}
 }
 

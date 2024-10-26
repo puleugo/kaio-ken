@@ -23,7 +23,7 @@ export class RssRepository implements RssRepositoryInterface {
 		const posts = this.parsingTistoryRss(rss)
 		posts.blog = blog;
 		const newPost = posts.filterNewPosts(blog.lastPublishedAt);
-		this.logger.debug(`새로운 포스트 ${newPost.length}개를 찾았습니다.`);
+		this.logger.debug(`${blog.lastPublishedAt} 이후의 새로운 포스트 ${newPost.length}개를 찾았습니다.`);
 		return newPost;
 	}
 

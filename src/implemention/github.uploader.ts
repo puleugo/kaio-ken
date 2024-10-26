@@ -14,7 +14,7 @@ export class GithubUploader implements GithubUploaderInterface{
 	}
 
 	async uploadPosts(newPosts: Posts, blogs: Blogs): Promise<Metadata> {
-		if (newPosts.length === 0){
+		if (newPosts.isEmpty){
 			throw new Error('새로운 포스트가 없어 업로드를 진행하지 않습니다.');
 		}
 		this.logger.debug('새로운 포스트가 발견되어 업로드를 진행합니다.');

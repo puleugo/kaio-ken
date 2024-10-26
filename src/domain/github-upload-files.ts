@@ -1,7 +1,6 @@
 import {Posts} from "./posts";
 import {Metadata} from "./metadata";
 import {Blogs} from "./blogs";
-import {DateUtil} from "../util/util/DateUtil";
 
 export interface GithubUploadFile {
 	path: string;
@@ -23,22 +22,22 @@ export class GithubUploadFileBuilder {
 		return this
 	}
 
-	putMetadata(previousMetadata: Metadata | null): GithubUploadFileBuilder {
+	putMetadata(metadata: Metadata | null): GithubUploadFileBuilder {
+		this.metadata = metadata;
 		return this;
 	}
 
 	build(): GithubUploadFile[] {
 		if (!this.metadata) {
-			const metadata = new Metadata({posts: this.newPosts, blogs: this.blogs}).githubUploadFile;
+			const metadata = new Metadata({posts: this.newPosts, blogs: this.blogs});
 			const newPosts = this.newPosts.toGithubUploadFiles;
-			return [...newPosts, metadata];
+			return [...newPosts, metadata.githubUploadFile];
 		}
-		const newPosts = this.newPosts.toGithubUploadFiles;
 		this.metadata.update(
 			this.newPosts,
-			this.blogs
+			this.blogs,
 		);
 
-		return [...newPosts, this.metadata.githubUploadFile];
+		return [...this.newPosts.toGithubUploadFiles, this.metadata.githubUploadFile];
 	}
 }

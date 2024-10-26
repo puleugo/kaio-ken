@@ -3,11 +3,11 @@ import {rssRepository, RssRepositoryInterface} from "../repository/rss.repositor
 import {spreadSheetRepository, SpreadSheetRepositoryInterface} from "../repository/spread-sheet.repository";
 import {Blogs} from "../domain/blogs";
 
-export interface RssReaderInterface {
+export interface OriginalContentsReaderInterface {
 	readBlogsAndPosts(): Promise<[Posts, Blogs]>;
 }
 
-export class RssReader implements RssReaderInterface {
+export class RssReader implements OriginalContentsReaderInterface {
 	constructor(
 		private readonly rssRepository: RssRepositoryInterface,
 		private readonly spreadSheetRepository: SpreadSheetRepositoryInterface,

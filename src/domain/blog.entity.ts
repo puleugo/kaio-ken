@@ -1,6 +1,6 @@
-import {BlogPlatformEnum, HrefTagEnum, isBlogPlatformEnum, isHrefTageEnum} from "../type";
-import dayjs from "dayjs";
+import {BlogPlatformEnum, HrefTagEnum, isBlogPlatformEnum} from "../type";
 import {DateUtil} from "../util/util/DateUtil";
+import {Posts} from "./posts";
 
 /**
  * @typedef {('PUBLISHER'|'SUBSCRIBER'|'UNSUBSCRIBER')} blogType
@@ -20,6 +20,7 @@ export interface BlogInterface {
 	type: blogType;
 }
 
+
 export interface BlogMetadata {
 	title: string;
 	platform: BlogPlatformEnum;
@@ -31,6 +32,17 @@ export interface BlogMetadata {
 }
 
 export class BlogEntity{
+
+	// SpreadSheet를 통해 수정할 수 있는 필드의 값을 반환합니다.
+	get getEditableValue(): Pick<BlogInterface, 'title' | 'rssUrl' | 'platform' | 'language' | 'type'> {
+		return {
+			title: this.value.title,
+			rssUrl: this.value.rssUrl,
+			platform: this.value.platform,
+			language: this.value.language,
+			type: this.value.type,
+		}
+	};
 	get metadata(): BlogMetadata {
 		return {
 			title: this.value.title,
@@ -51,6 +63,10 @@ export class BlogEntity{
 
 	private value: BlogInterface;
 
+	addPosts(publishedPosts: Posts): void {
+		this.value.lastPublishedIndex += publishedPosts.length;
+	}
+
 	get lastPublishedIndex(): number {
 		return this.value.lastPublishedIndex;
 	};
@@ -70,21 +86,21 @@ export class BlogEntity{
 		return this.value.title;
 	}
 
+	fetchPublishedAt() {
+		this.value.lastPublishedAt = new Date();
+	}
+
 
 	get toValue() :any[] {
 		return [this.value.title, this.value.lastPublishedIndex, DateUtil.formatYYYYMMDD(this.value.lastPublishedAt), this.value.rssUrl, this.value.platform, this.value.type]
-	}
-
-	get isValidEntity(): boolean {
-		return this.value !== undefined;
 	}
 
 	get platform(): BlogPlatformEnum {
 		return this.value.platform;
 	}
 
-	fetchLastPublishedAt(newPostCount: number) {
-		this.value.lastPublishedIndex += newPostCount;
+	fetchPublishedInfo(publishedPosts: Posts) {
+		this.value.lastPublishedIndex = publishedPosts.last.index;
 		this.value.lastPublishedAt = new Date();
 	}
 
@@ -129,7 +145,6 @@ export class BlogEntity{
 				language : props.language,
 				type : props.type,
 			};
-
 		}
 	}
 
@@ -143,7 +158,7 @@ export class BlogEntity{
 		if (props[2] === undefined || isNaN(Date.parse(props[2]))) {
 			return false;
 		}
-		if (props[3] === undefined || props[3].length <= 0) {
+		if (props[3] === undefined || (props[3].length === 0 && props[5] === 'PUBLISHER')) { // rss url은 subsriber라면 필요없음.
 			return false;
 		}
 		if (!isBlogPlatformEnum(props[4])) {
@@ -165,7 +180,7 @@ export class BlogEntity{
 		if (props[2].length > 0) { // 비어있어야 함.
 			return false;
 		}
-		if (props[3].length <= 0) { // 반드시 차있어야함.
+		if (props[3].length || (props[3].length === 0 && props[5] === 'PUBLISHER')) { // 반드시 차있어야함.
 			return false;
 		}
 		if (!isBlogPlatformEnum(props[4])) { // 반드시 차있어야함.
@@ -178,6 +193,15 @@ export class BlogEntity{
 	}
 
 	private static validateBlogType(raw: string) {
-		return raw !== undefined && (raw === 'PUBLISHER' || raw === 'SUBSCRIBE' || raw === 'UNSUBSCRIBE');
+		return raw !== undefined && (raw === 'PUBLISHER' || raw === 'SUBSCRIBER' || raw === 'UNSUBSCRIBER');
+	}
+
+	// SpreadSheet에 업로드된 블로그 정보를 기반으로 블로그 엔티티를 생성한다.
+	merge(publisherBlog: BlogEntity): BlogEntity {
+		return new BlogEntity(Object.assign(this.value, publisherBlog.getEditableValue))
+	}
+
+	unsubscribe() {
+		this.value.type = 'UNSUBSCRIBER';
 	}
 }

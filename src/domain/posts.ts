@@ -2,6 +2,7 @@ import {PostEntity, PostMetadata} from "./postEntity";
 import {BlogEntity} from "./blog.entity";
 import {GithubUploadFile} from "./github-upload-files";
 import {DateUtil} from "../util/util/DateUtil";
+import dayjs from "dayjs";
 
 export interface PostsMetadata {
 	[index: number]: PostMetadata;
@@ -11,12 +12,24 @@ export class Posts {
 	private _blog: BlogEntity | null;
 	private posts: PostEntity[]
 
+	hasPostIndex(index: number): boolean {
+		return this.posts.some(post => post.index === index);
+	};
+
+	get first(): PostEntity {
+		return this.posts[0];
+	}
+
 	get last(): PostEntity {
 		return this.posts[this.posts.length - 1];
 	}
 
 	get toEntities(): PostEntity[] {
 		return this.posts;
+	}
+
+	get indexes(): number[] {
+		return this.posts.map(post => post.index);
 	}
 
 	constructor(posts: PostEntity[], blog: BlogEntity | null = null) {
@@ -44,8 +57,6 @@ export class Posts {
 	}
 
 	get toGithubUploadFiles(): GithubUploadFile[] {
-		this._blog?.fetchLastPublishedAt(this.posts.length);
-
 		return this.posts.map(post => ({
 			path: `${post.language}/${post.index}.md`,
 			content: post.content,
@@ -70,14 +81,22 @@ export class Posts {
 	}
 
 	filterNewPosts(lastSyncedAt: Date = DateUtil.min): Posts {
-		return new Posts(this.posts.filter(post => post.uploadedAt > lastSyncedAt), this._blog);
+		return new Posts(this.posts.filter(post => dayjs(post.uploadedAt).isAfter(lastSyncedAt)), this._blog);
 	}
 
 	fillIndex(startIndex: number): Posts {
-		return new Posts(this.posts.map((post, index) => {post.index = startIndex + index; return post}));
+		return new Posts(this.posts.map((post, index) => {post.index = startIndex + index+1; return post}));
 	}
 
-	push(post: PostEntity) {
-		this.posts.push(post);
+	push(post: PostEntity[]) {
+		this.posts.push(...post);
+	}
+
+	hasPost(post: PostEntity) {
+		return this.posts.some(p => p.originUrl === post.originUrl);
+	}
+
+	updateByNewData(newPosts: Posts, lastPublishedAt: Date) {
+		this.posts = this.posts.concat(newPosts.posts.filter(post => dayjs(post.uploadedAt).isAfter(lastPublishedAt)));
 	}
 }

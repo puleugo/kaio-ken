@@ -17,7 +17,7 @@ export class SpreadSheetUploader implements SpreadSheetUploaderInterface {
 	}
 
 	async fetchPosts(metadata: Metadata): Promise<void> {
-		await this.spreadSheetRepository.updateSubscribeBlog(metadata.postsCollection, metadata.publishBlog);
+		await this.spreadSheetRepository.updatePublisherBlog(metadata.posts, metadata.publishBlog);
 	}
 }
 

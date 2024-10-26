@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 const methodObject = {
-	'READ': () => app.generateOriginalPost(),
+	'READ': () => app.cloneOriginalPostsToGithub(),
 	'PUBLISH': () => new Promise<void>(resolve => resolve()),
 	'UPDATE_SPREAD_SHEET': () =>app.updateSpreadSheetSettings(),
 }

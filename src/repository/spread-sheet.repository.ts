@@ -4,13 +4,18 @@ import {Blogs} from "../domain/blogs";
 import {envManager, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import {BlogEntity} from "../domain/blog.entity";
+import { sheets_v4 } from 'googleapis/build/src/apis/sheets/v4';
 
 export interface SpreadSheetRepositoryInterface {
+	write(valueRange: sheets_v4.Schema$ValueRange): Promise<void>;
+
 	readPosts(): Promise<Posts>;
 
 	readBlogs(): Promise<Blogs>
 
-	updateSubscribeBlog(posts: Posts, publisherBlog: BlogEntity): Promise<void>;
+	updatePublisherBlog(posts: Posts, publisherBlog: BlogEntity): Promise<void>;
+
+	truncate(range: string): Promise<void>;
 }
 
 
@@ -46,48 +51,79 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 		return new Posts([]);
 	}
 
-	async updateSubscribeBlog(posts: Posts, publisherBlog: BlogEntity): Promise<void> {
+	async updatePublisherBlog(clonedPosts: Posts, publisherBlog: BlogEntity): Promise<void> {
 		this.authenticateIfNeeded();
-		const rawBlogs  = await this.sheetApi.get({
-			range: 'Blogs!A2:G100',
-			spreadsheetId: this.spreadsheetId,
-		});
-		const values = rawBlogs.data.values;
+
+		publisherBlog.fetchPublishedInfo(clonedPosts)
+
+		const values = await this.getSheetValues('Blogs!A2:G100')
 		if (!values) {
 			throw new Error('갱신할 블로그가 스프레드 시트에서 사라졌습니다. 스프레드 시트를 확인 후 다시 실행해주세요.');
 		}
+
 		const blogs = new Blogs(values);
 		blogs.update(publisherBlog)
 
-		await this.sheetApi.batchUpdate({
-			spreadsheetId: this.spreadsheetId,
-			requestBody: {
-				valueInputOption: 'USER_ENTERED',
-				data: [blogs.toValues]
-			}
-		})
+		await this.write(blogs.toValuesWithRange)
 		this.logger.debug('갱신에 성공했습니다.')
 	}
 
 	async readBlogs(): Promise<Blogs> {
 		this.authenticateIfNeeded();
+
 		this.logger.debug('블로그 정보를 읽어옵니다.')
-		const result = await this.sheetApi.get({
-			range: 'Blogs!A2:G100',
-			spreadsheetId: this.spreadsheetId,
-		});
-		const values = result.data.values;
+		const values = await this.getSheetValues('Blogs!A2:G100')
 		if (!values) {
 			throw new Error('블로그 시트에 데이터가 없습니다.');
 		}
-		this.logger.debug('블로그 정보를 읽어왔습니다.')
+
 		const blogs = new Blogs(values)
 		this.logger.debug(`${blogs.length}개의 블로그 정보를 파싱했습니다.`)
+
 		const subscribeBlog = blogs.publisherBlog;
 		if (!subscribeBlog) {
 			throw new Error('발행 블로그로 설정된 블로그가 없습니다. 발행 블로그를 \'PUBLISHER\'으로 설정해주세요.');
 		}
+
 		return blogs;
+	}
+
+	async truncate(range: string): Promise<void> {
+		this.authenticateIfNeeded();
+
+		await this.sheetApi.clear({
+			spreadsheetId: this.spreadsheetId,
+			range: range
+		})
+		return;
+	}
+
+	private async getSheet(range: string): Promise<sheets_v4.Schema$ValueRange> {
+
+		return await this.sheetApi.get({
+			range: 'Blogs!A2:G100',
+			spreadsheetId: this.spreadsheetId,
+		});
+	}
+
+	private async getSheetValues(range: string): Promise<string[][]> {
+		this.authenticateIfNeeded();
+		const result = await this.sheetApi.get({
+			range: range,
+			spreadsheetId: this.spreadsheetId,
+		});
+		return result.data.values;
+	}
+
+	async write(valueRange: sheets_v4.Schema$ValueRange) {
+		this.authenticateIfNeeded();
+		await this.sheetApi.batchUpdate({
+			spreadsheetId: this.spreadsheetId,
+			requestBody: {
+				valueInputOption: 'USER_ENTERED',
+				data: [valueRange]
+			}
+		})
 	}
 }
 

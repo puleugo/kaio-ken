@@ -1,10 +1,13 @@
 import {BlogEntity, BlogMetadata} from "./blog.entity";
 import {sheets_v4} from "googleapis";
+import {Metadata, MetadataJson} from "./metadata";
+import {Posts} from "./posts";
 
 export type BlogsMetadata = Array<BlogMetadata>;
 
 export class Blogs {
 	private blogs: BlogEntity[];
+
 
 	constructor(values: string[][] | BlogEntity[]) {
 		let blogs: BlogEntity[] = [];
@@ -15,7 +18,7 @@ export class Blogs {
 			blogs = values as BlogEntity[];
 		}
 		else {
-			blogs = values.map((value) => new BlogEntity(value)).filter(blog => blog.isValidEntity);
+			blogs = values.map((value) => new BlogEntity(value));
 		}
 		blogs = blogs.filter(blog => !blog.isUnsubscriber);
 		const publisherBlogs = blogs.filter(blog => blog.isPublisher);
@@ -28,12 +31,16 @@ export class Blogs {
 		this.blogs = blogs;
 	}
 
+	private get publisherBlogIndex(): number {
+		return this.blogs.findIndex(blog => blog.isPublisher);
+	}
+
 	get publisherBlog(): BlogEntity | null {
 		const publishBlog = this.blogs.find(blog => blog.isPublisher);
 		return publishBlog ?? null;
 	}
 
-	get toValues() :sheets_v4.Schema$ValueRange {
+	get toValuesWithRange() :sheets_v4.Schema$ValueRange {
 		return {
 			range: 'Blogs!A2:G100',
 			values: this.blogs.map(blog => blog.toValue)
@@ -55,5 +62,51 @@ export class Blogs {
 		} else {
 			this.blogs[index] = updateBlog;
 		}
+	}
+
+	/**
+	 * 이전 메타데이터와 신규 포스트 데이터를 기반으로 블로그 정보를 업데이트한다.
+	 * 블로그명, RSS주소, 플랫폼, 발행블로그 여부는 변경될 수 있습니다.
+	 * 마지막 발행 게시글 ID, 마지막 배포일은 메타데이터의 정보를 기반으로 사용됩니다.
+	 * @param newPosts RSS를 통해 읽어온 신규 포스트
+	 * @param newBlogs SpreadSheet에서 읽어온 블로그 정보
+	 */
+	updateByNewData(newPosts: Posts, newBlogs: Blogs): void {
+		this.blogs.forEach((blog) => {
+			if (blog.isPublisher) {
+				blog.addPosts(newPosts);
+				blog.fetchPublishedAt();
+			}
+			// 해당 블로그 내용을 머지
+			if (newBlogs.hasBlog(blog)) {
+				const newBlog = newBlogs.getBlog(blog);
+				blog.merge(newBlog);
+			} else {
+				blog.unsubscribe()
+			}
+		})
+
+		const registeredBlogs = newBlogs.getComplement(this.blogs)
+		this.blogs.push(...registeredBlogs);
+	}
+
+	private hasBlog(blog: BlogEntity) {
+		return this.blogs.some((b) => b.rssUrl === blog.rssUrl);
+	}
+
+	private getBlog(blog: BlogEntity): BlogEntity | null {
+		return blog;
+	}
+
+	private getComplement(blogs: BlogEntity[]): BlogEntity[] {
+		return this.blogs.filter(blog => !blogs.some(b => b.rssUrl === blog.rssUrl));
+	}
+
+	isSamePublisherBlog(blog: BlogEntity): boolean {
+		return this.publisherBlog.rssUrl === blog.rssUrl;
+	}
+
+	updatePublisherBlog(publisherBlog: BlogEntity) {
+		this.blogs[this.publisherBlogIndex].merge(publisherBlog);
 	}
 }
