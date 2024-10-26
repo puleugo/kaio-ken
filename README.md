@@ -13,16 +13,3 @@
 2. Free And Server-less: 무료 기능들을 사용하여 서비스를 제공합니다.
 3. Run In Mobile: 구글 스프레드 시트와 Git Action을 통해 모바일 기기나 PC방에서도 쉽게 조작할 수 있습니다.
 
-## 실행
-아래 명령어는 빌드 후에 환경변수를 설정한 후 실행하는 명령어입니다.
-깃 액션에서도 다음과 같이 실행됩니다. 아래 변수들은 모두 랜덤한 값입니다.
-```bash
-npm run build && npx cross-env \
-  GH_REPOSITORY='kablog-test' \  # GITHUB_이지 않는 이유는 GITHUB SECRET 명명 규칙과 충돌하기 때문입니다.
-  GH_TOKEN='ghp_tH1sF0rEx4mp1e' \
-  GH_USER='puleugo'\
-  GOOGLE_SHEET_ID='tHis1sN0tAV41ideKey' \
-  GOOGLE_CLIENT_EMAIL='kablog@kablog-1201120112011201.iam.gserviceaccount.com' \
-  GOOGLE_PRIVATE_KEY='-----BEGIN PRIVATE KEY-----\n_This_is_not_a_Real_Private_key\n_This_is_Just_for_example_\n_Im_Not_A_Baby\n_TY\n-----END PRIVATE KEY-----\n' \
-  npm run start
-```

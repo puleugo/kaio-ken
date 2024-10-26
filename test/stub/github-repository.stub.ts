@@ -3,6 +3,9 @@ import {GithubUploadFile} from "../../src/domain/github-upload-files";
 import {Metadata} from "../../src/domain/metadata";
 
 export class GithubRepositoryStub implements GithubRepositoryInterface {
+    deleteFile(filePath: string): void {
+        throw new Error("Method not implemented.");
+    }
 	private _uploadCount: number = 0;
 	metadata: Metadata | null = null;
 
