@@ -133,7 +133,7 @@ export class BlogEntity{
 				}
 			}
 			else {
-				return;
+				throw new Error(`잘못된 블로그 정보가 있습니다.${props}`);
 			}
 		} else {
 			this.value = {

@@ -238,6 +238,11 @@ describe('Application e2e test', () => {
 				})
 				expect(posts.length).toBe(metadata.postLength);
 			})
+
+			it('이미 업로드되어 있는 글은 다시 업로드하지 않는다.', async () => {
+				await app.cloneOriginalPostsToGithub();
+				expect(() => app.cloneOriginalPostsToGithub()).resolves.toThrow();
+			})
 		})
 	})
 
