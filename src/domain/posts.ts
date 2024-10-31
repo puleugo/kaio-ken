@@ -124,6 +124,7 @@ export class Posts {
 		return Promise.all(promises);
 	}
 
+	// FIXME: TranslatedPost 중복 제거
 	addTranslatedPost(postId: number, post: PostEntity) {
 		const target = this.posts.find(p => p.index === postId);
 		if (target) {
