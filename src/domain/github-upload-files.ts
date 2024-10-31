@@ -1,6 +1,7 @@
 import {Posts} from "./posts";
 import {Metadata} from "./metadata";
 import {Blogs} from "./blogs";
+import {TranslatedPosts} from "./translatedPosts";
 
 export interface GithubUploadFile {
 	path: string;
@@ -11,6 +12,7 @@ export class GithubUploadFileBuilder {
 	private metadata: Metadata = null;
 	private newPosts: Posts = null;
 	private blogs: Blogs = null;
+	private translatedPosts: TranslatedPosts = null;
 
 	addPosts(newPosts: Posts): GithubUploadFileBuilder {
 		this.newPosts = newPosts;
@@ -22,22 +24,34 @@ export class GithubUploadFileBuilder {
 		return this
 	}
 
+	addTranslatedPosts(translatedPosts: TranslatedPosts): GithubUploadFileBuilder {
+		this.translatedPosts = translatedPosts;
+		return this;
+	}
+
 	putMetadata(metadata: Metadata | null): GithubUploadFileBuilder {
 		this.metadata = metadata;
 		return this;
 	}
 
 	build(): GithubUploadFile[] {
+		const result = []
 		if (!this.metadata) {
-			const metadata = new Metadata({posts: this.newPosts, blogs: this.blogs});
-			const newPosts = this.newPosts.toGithubUploadFiles;
-			return [...newPosts, metadata.githubUploadFile];
+			this.metadata = new Metadata({posts: this.newPosts, blogs: this.blogs});
+			result.push(...this.newPosts.toGithubUploadFiles);
 		}
-		this.metadata.update(
-			this.newPosts,
-			this.blogs,
-		);
+		if(this.newPosts && this.blogs) {
+			this.metadata.update(this.newPosts, this.blogs);
+			result.push(...this.newPosts.toGithubUploadFiles);
+			// result.push(...this.newPosts.imageGithubFiles);
+		}
 
-		return [...this.newPosts.toGithubUploadFiles, this.metadata.githubUploadFile];
+		if (this.translatedPosts !== null) {
+			this.metadata.addTranslatedPost(this.translatedPosts);
+			result.push(...this.translatedPosts.githubUploadFile)
+		}
+
+		result.push(this.metadata.githubUploadFile);
+		return result;
 	}
 }

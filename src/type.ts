@@ -3,7 +3,7 @@ export interface RssResponse {
 	channel: BlogRssResponse;
 }
 
-interface BlogerProfileImage {
+interface BloggerProfileImage {
 	title: string[];
 	url: string[];
 	link: string[];
@@ -18,7 +18,7 @@ interface BlogRssResponse {
 	generator: string[];
 	ttl: number[];
 	managingEditor: string[];
-	image: BlogerProfileImage[]
+	image: BloggerProfileImage[]
 	item: PostRssResponse[];
 }
 
@@ -193,9 +193,21 @@ export enum HrefTagEnum {
 	Welsh = 'cy'
 }
 
-export function isHrefTageEnum(arg: any): arg is HrefTagEnum {
+export const blogLanguageMap = new Map<BlogPlatformEnum, HrefTagEnum>([
+	[BlogPlatformEnum.Tistory, HrefTagEnum.Korean],
+	[BlogPlatformEnum.Velog, HrefTagEnum.Korean],
+	[BlogPlatformEnum.Medium, HrefTagEnum.English],
+	[BlogPlatformEnum.Qiita, HrefTagEnum.Japanese],
+]);
+
+export function isLanguageEnum(arg: any): arg is HrefTagEnum {
 	if (!arg) return false;
 	return (!!arg && typeof arg === 'string' && (Object.keys(HrefTagEnum) as string[]).includes(arg))
+}
+
+export function isHrefTagEnum(arg: any): arg is HrefTagEnum {
+	if (!arg) return false;
+	return (!!arg && typeof arg === 'string' && (Object.values(HrefTagEnum) as string[]).includes(arg))
 }
 
 export function isBlogPlatformEnum(arg: any): arg is BlogPlatformEnum {

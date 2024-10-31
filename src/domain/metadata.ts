@@ -4,6 +4,7 @@ import {GithubUploadFile} from "./github-upload-files";
 import {PostEntity} from "./postEntity";
 import {DateUtil} from "../util/util/DateUtil";
 import {BlogEntity} from "./blog.entity";
+import {TranslatedPosts} from "./translatedPosts";
 
 export interface MetadataJson {
 	posts: PostsMetadata;
@@ -22,6 +23,7 @@ interface DomainConstructor {
 }
 
 export class Metadata {
+
 	static path = 'metadata.json';
 	private _posts: Posts;
 	private _blogs: Blogs;
@@ -84,6 +86,10 @@ export class Metadata {
 		return this._posts;
 	}
 
+	get blogs(): Blogs {
+		return this._blogs;
+	}
+
 	get githubUploadFile(): GithubUploadFile {
 		return {
 			path: Metadata.path,
@@ -117,5 +123,19 @@ export class Metadata {
 		this._blogs.updateByNewData(newPosts, blogs)
 
 		this._lastExecutedAt = new Date();
+	}
+
+	addTranslatedPost(translatedPosts: TranslatedPosts) {
+		// 번역해야하는 게시글을 각 posts에 추가
+		const posts = translatedPosts.getLanguages.map(language => translatedPosts.getPostByLanguage(language).toEntities).flat();
+		posts.forEach(post => {
+			this._posts.addTranslatedPost(post.index, post);
+		})
+		// Metadata의 lastExecutedAt을 오늘 날짜로 업데이트
+		this._lastExecutedAt = new Date();
+	}
+
+	getPostById(index: number) {
+		return this._posts.getById(index);
 	}
 }

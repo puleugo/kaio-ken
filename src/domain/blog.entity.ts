@@ -1,4 +1,4 @@
-import {BlogPlatformEnum, HrefTagEnum, isBlogPlatformEnum} from "../type";
+import {blogLanguageMap, BlogPlatformEnum, HrefTagEnum, isBlogPlatformEnum} from "../type";
 import {DateUtil} from "../util/util/DateUtil";
 import {Posts} from "./posts";
 
@@ -54,12 +54,6 @@ export class BlogEntity{
 			type: this.value.type
 		}
 	};
-	private readonly blogLanguageMap = new Map<BlogPlatformEnum, HrefTagEnum>([
-		[BlogPlatformEnum.Tistory, HrefTagEnum.Korean],
-		[BlogPlatformEnum.Velog, HrefTagEnum.Korean],
-		[BlogPlatformEnum.Medium, HrefTagEnum.English],
-		[BlogPlatformEnum.Qiita, HrefTagEnum.Japanese],
-	]);
 
 	private value: BlogInterface;
 
@@ -99,6 +93,10 @@ export class BlogEntity{
 		return this.value.platform;
 	}
 
+	get language(): HrefTagEnum {
+		return this.value.language;
+	}
+
 	fetchPublishedInfo(publishedPosts: Posts) {
 		this.value.lastPublishedIndex = publishedPosts.last.index;
 		this.value.lastPublishedAt = new Date();
@@ -116,7 +114,7 @@ export class BlogEntity{
 					lastPublishedAt: new Date(props[2]),
 					rssUrl: props[3],
 					platform: props[4] as BlogPlatformEnum,
-					language: this.blogLanguageMap.get(props[4] as BlogPlatformEnum),
+					language: blogLanguageMap.get(props[4] as BlogPlatformEnum),
 					type: props[5] as blogType,
 				}
 			}
@@ -128,7 +126,7 @@ export class BlogEntity{
 					lastPublishedAt: new Date(new Date().setFullYear(new Date().getFullYear() + 100)),
 					rssUrl: props[3],
 					platform: props[4] as BlogPlatformEnum,
-					language: this.blogLanguageMap.get(props[4] as BlogPlatformEnum),
+					language: blogLanguageMap.get(props[4] as BlogPlatformEnum),
 					type: props[5] as blogType,
 				}
 			}

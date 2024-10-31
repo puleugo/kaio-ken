@@ -1,4 +1,3 @@
-import {Posts} from "../domain/posts";
 import axios from "axios";
 import {envManager, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
@@ -8,7 +7,9 @@ import {Metadata} from "../domain/metadata";
 export interface GithubRepositoryInterface {
 	upload(files: GithubUploadFile[]): Promise<Metadata>;
 	readOrNull(filePath: string): Promise<string>;
+	getFilesInDirectory(path: string): Promise<any[]>;
 	deleteFile(filePath: string): void;
+	deleteDirectory(path: string): void;
 }
 
 export class GithubRepository implements GithubRepositoryInterface {
@@ -23,7 +24,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 
 	constructor(private readonly envValidator: EnvManagerInterface, private readonly logger: LoggerInterface) {}
 
-	authenticateIfNeeded() {
+	private authenticateIfNeeded() {
 		if (this.config) {
 			return;
 		}
@@ -117,7 +118,7 @@ export class GithubRepository implements GithubRepositoryInterface {
 		}
 	}
 
-	async getFilesInDirectory(path: string) {
+	async getFilesInDirectory(path: string): Promise<any[]> {
 		this.authenticateIfNeeded();
 		const response = await axios({
 			url: this.getFileContentPath(path),
@@ -156,6 +157,9 @@ export class GithubRepository implements GithubRepositoryInterface {
 
 	async deleteDirectory(path: string) {
 		const files = await this.getFilesInDirectory(path)
+		if (files.length === 0) {
+			return;
+		}
 		for (const file of files) {
 			if (file.type === 'file') {
 				await this.deleteFile(file.path, file.sha);

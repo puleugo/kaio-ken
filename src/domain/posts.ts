@@ -3,6 +3,7 @@ import {BlogEntity} from "./blog.entity";
 import {GithubUploadFile} from "./github-upload-files";
 import {DateUtil} from "../util/util/DateUtil";
 import dayjs from "dayjs";
+import {HrefTagEnum} from "../type";
 
 export interface PostsMetadata {
 	[index: number]: PostMetadata;
@@ -11,6 +12,16 @@ export interface PostsMetadata {
 export class Posts {
 	private _blog: BlogEntity | null;
 	private posts: PostEntity[]
+	get imageGithubFiles(): GithubUploadFile[] {
+		return this.posts.flatMap(post => post.images.map(image => ({
+			path: `images/${post.index}/${image.filename}`,
+			content: image.content,
+		})
+		));
+	};
+	get imageUrls(): string[] {
+		return this.posts.flatMap(post => post.images.map(image => image.url));
+	};
 
 	hasPostIndex(index: number): boolean {
 		return this.posts.some(post => post.index === index);
@@ -74,7 +85,7 @@ export class Posts {
 					uploadedAt: DateUtil.formatYYYYMMDD(post.uploadedAt),
 				},
 				translatedLanguages: post.translatedLanguages,
-				translated: post.translatedPosts.metadata,
+				translated: post.translatedPosts.postsWithLanguage,
 			}
 		)
 		return result;
@@ -98,5 +109,25 @@ export class Posts {
 
 	updateByNewData(newPosts: Posts, lastPublishedAt: Date) {
 		this.posts = this.posts.concat(newPosts.posts.filter(post => dayjs(post.uploadedAt).isAfter(lastPublishedAt)));
+	}
+
+	filterNotTranslatedBy(language: HrefTagEnum): Posts {
+		return new Posts(this.posts.filter(post => !post.translatedLanguages.includes(language)));
+	}
+
+	getById(id: number): PostEntity | null {
+		return this.posts.find(post => post.index === id) || null;
+	}
+
+	async map(callback: (post: PostEntity) => Promise<PostEntity>): Promise<PostEntity[]> {
+		const promises = this.posts.map(callback);
+		return Promise.all(promises);
+	}
+
+	addTranslatedPost(postId: number, post: PostEntity) {
+		const target = this.posts.find(p => p.index === postId);
+		if (target) {
+			target.translatedPosts.push(post.language, post);
+		}
 	}
 }

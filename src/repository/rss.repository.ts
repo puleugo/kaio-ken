@@ -4,6 +4,7 @@ import {XMLParser} from "fast-xml-parser";
 import {HrefTagEnum, RssResponse} from "../type";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import {BlogEntity} from "../domain/blog.entity";
+import * as fs from "node:fs";
 
 export interface RssRepositoryInterface {
 	readPosts(blog: BlogEntity): Promise<Posts>;
@@ -22,9 +23,17 @@ export class RssRepository implements RssRepositoryInterface {
 
 		const posts = this.parsingTistoryRss(rss)
 		posts.blog = blog;
-		const newPost = posts.filterNewPosts(blog.lastPublishedAt);
-		this.logger.debug(`${blog.lastPublishedAt} 이후의 새로운 포스트 ${newPost.length}개를 찾았습니다.`);
-		return newPost;
+		const newPosts = posts.filterNewPosts(blog.lastPublishedAt);
+		this.logger.debug(`${blog.lastPublishedAt} 이후의 새로운 포스트 ${newPosts.length}개를 찾았습니다.`);
+
+		// for (const post of newPosts.toEntities) {
+		// 	await Promise.all(post.images.map(async image => {
+		// 		image.content = await this.getImage(image.url);
+		// 		post.content = post.content.replace(`${image.url}`, image.id);
+		// 	}));
+		// }
+
+		return newPosts;
 	}
 
 	private parsingTistoryRss(raw: RssResponse): Posts {
@@ -40,6 +49,11 @@ export class RssRepository implements RssRepositoryInterface {
 				language: HrefTagEnum.Korean,
 			})
 		));
+	}
+
+	private async getImage(url: string): Promise<Buffer> {
+		const response = await fetch(url);
+		return Buffer.from(await response.arrayBuffer());
 	}
 }
 
