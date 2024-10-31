@@ -1,0 +1,31 @@
+name: 'Auto Translate'
+
+on:
+  workflow_dispatch: # 수동 실행
+    schedule:
+        - cron: "0 4 * * *" # 매일 4시에 자동 실행
+
+env:
+  REPOSITORY: github.repository
+  GITHUB_USER: github.actor
+
+jobs:
+  auto-translate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto Translate
+        uses: puleugo/kablog@main
+        with:
+            GH_REPOSITORY: 'kablog-test'
+            GH_USER: 'puleugo'
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+            GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+            GOOGLE_CLIENT_EMAIL: ${{ secrets.GOOGLE_CLIENT_EMAIL }}
+            GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+
+            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+            MEDIUM_TOKEN: ${{ secrets.MEDIUM_TOKEN }}
+            METHOD:
+              - 'READ' # 게시글을 읽어서 Github에 저장
+              - 'PUBLISH' # 번역하여 배포

@@ -31,6 +31,19 @@ export class EnvManager implements EnvManagerInterface{
 		}
 		process.env[key] = value;
 	}
+
+	loadDotEnv() {
+		this.logger.debug('.env 파일을 로드합니다.');
+		require('dotenv').config();
+	}
+
+	put(key: string, value: string | null) {
+		this.logger.debug(`환경변수 ${key}에 ${value}를 저장합니다.`);
+		if (!key) {
+			throw new Error('key가 필요합니다.');
+		}
+		process.env[key] = value;
+	}
 }
 
 export const envManager = new EnvManager(githubActionLogger);
