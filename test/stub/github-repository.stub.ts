@@ -25,4 +25,11 @@ export class GithubRepositoryStub implements GithubRepositoryInterface {
 		this._uploadCount += files.length;
 		return this.metadata;
 	}
+
+	deleteDirectory(path: string): void {
+	}
+
+	getFilesInDirectory(path: string): Promise<any[]> {
+		return Promise.resolve([]);
+	}
 }

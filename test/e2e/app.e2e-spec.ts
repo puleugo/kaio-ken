@@ -12,6 +12,10 @@ import {Metadata, MetadataJson} from "../../src/domain/metadata";
 import {Blogs} from "../../src/domain/blogs";
 import {DateUtil} from "../../src/util/util/DateUtil";
 import {MetadataMother} from "../fixture/metadata.mother";
+import {postReader} from "../../src/implemention/post.reader";
+import {postUploader} from "../../src/implemention/post.uploader";
+import {TranslateClientStub} from "../stub/translate-client.stub";
+import {chatGptTranslator} from "../../src/implemention/chat-gpt.translator";
 
 describe('Application e2e test', () => {
 	jest.setTimeout(1000 * 60 * 10);
@@ -29,9 +33,11 @@ describe('Application e2e test', () => {
 		app = new App(
 			githubUploader,
 			spreadSheetUploader,
-			// translateClientStub,
-			// qiitaClientStub,
+			postReader,
+			chatGptTranslator,
+			// new TranslateClientStub(),
 			rssReader,
+			postUploader,
 		);
 		spreadSheetFactory = new SpreadSheetRepository(envManager, githubActionLogger);
 		githubFactory = new GithubRepository(envManager, githubActionLogger);
@@ -40,9 +46,9 @@ describe('Application e2e test', () => {
 	afterEach(async () => {
 		await Promise.all([
 			// await spreadSheetRepository.truncate('Posts!A2:Z100'),
-			spreadSheetRepository.truncate('Blogs!A2:F100'),
-			githubFactory.deleteFile('metadata.json'),
-			githubFactory.deleteDirectory('ko-KR'),
+			// spreadSheetRepository.truncate('Blogs!A2:F100'),
+			// githubFactory.deleteFile('metadata.json'),
+			// githubFactory.deleteDirectory('ko-KR'),
 		]);
 	})
 
@@ -137,7 +143,6 @@ describe('Application e2e test', () => {
 				await app.cloneOriginalPostsToGithub();
 
 				const posts = await githubRepository.getFilesInDirectory('ko-KR');
-				console.log(posts)
 				const rawMetadata = await githubRepository.readOrNull('metadata.json');
 				const metadata = new Metadata(JSON.parse(rawMetadata));
 				expect(posts.length).toBe(metadata.postLength);
@@ -145,7 +150,8 @@ describe('Application e2e test', () => {
 		})
 
 		describe('케이스: 원본 글 복제만 수행됨', () => {
-			it('메타데이터를 업데이트 한다.', async () => {
+
+					it('메타데이터를 업데이트 한다.', async () => {
 				const previousMetadata = await uploadMetadataWithPosts();
 
 				await app.cloneOriginalPostsToGithub();
@@ -246,9 +252,17 @@ describe('Application e2e test', () => {
 		})
 	})
 
+	// TODO: Translator Stub 객체 활용하여 e2e 테스트 구현
 	describe('구독 블로그에 번역글을 업로드한다.', () => {
-		it.todo('번역글이 없으면 Github에 업로드하지 않는다.')
+		it('번역글이 없으면 Github에 업로드하지 않는다.', async () => {
+			// await githubFactory.deleteFile('metadata.json');
+			// await githubFactory.deleteDirectory('ko-KR');
+			// await uploadMetadataWithPosts();
+			// await app.cloneOriginalPostsToGithub();
+			await app.uploadPosts();
+		})
 		it.todo('구독 블로그의 언어수만큼 번역글을 Github에 업로드한다.');
+		it.todo('구독 블로그의 마지막 번역게시글을 갱신한다.')
 		it.todo('구독 블로그의 마지막 번역게시글을 갱신한다.')
 	})
 

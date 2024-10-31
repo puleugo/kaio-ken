@@ -12,7 +12,7 @@ export class LoggerStub implements LoggerInterface{
     debug(message: string): void {
 		this._debugCount++;
     }
-    warning(message: string): void {
+    warn(message: string): void {
 		this._warningCount++;
     }
     info(message: string): void {

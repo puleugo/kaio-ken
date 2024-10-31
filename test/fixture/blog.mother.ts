@@ -32,7 +32,7 @@ export class BlogMother {
 		return Array.from({length}, () => BlogMother.create({type: 'SUBSCRIBER'}));
 	}
 
-	private static createRealPublisher() {
+	static createRealPublisher() {
 		return new BlogEntity({
 			title: '푸르고의 개발 블로그',
 			platform: BlogPlatformEnum.Tistory,
