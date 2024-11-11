@@ -1,7 +1,8 @@
 import {HrefTagEnum} from "../type";
-import {PostEntity} from "./postEntity";
+import {PostEntity, PostMetadata} from "./postEntity";
 import {Posts} from "./posts";
 import {GithubUploadFile} from "./github-upload-files";
+import {DateUtil} from "../util/util/DateUtil";
 
 interface TranslatedPostWithLanguage {
 	[language: string]: {
@@ -38,10 +39,14 @@ export class TranslatedPosts {
 	}
 
 	getPostByIdAndLanguage(id: number, language: HrefTagEnum): PostEntity | null{
+		const posts = this.translatedPosts.get(language);
+		if (!posts) {
+			return null;
+		}
 		return this.translatedPosts.get(language).getById(id);
 	}
 
-	get getLanguages(): HrefTagEnum[] {
+	get languages(): HrefTagEnum[] {
 		return Array.from(this.translatedPosts.keys());
 	}
 
@@ -56,16 +61,8 @@ export class TranslatedPosts {
 		return result;
 	}
 
-	async map(callback: (post: PostEntity) => Promise<PostEntity>): Promise<PostEntity[]> {
-		const promises: Promise<PostEntity[]>[] = [];
-
-		this.translatedPosts.forEach(posts => {
-			promises.push(posts.map(callback));
-		});
-
-		// 모든 Posts 인스턴스의 결과를 평탄화하여 반환
-		const result = await Promise.all(promises);
-		return result.flat();
+	map<U>(callback: (post: PostEntity) => U): U[] {
+		return Array.from(this.translatedPosts.values()).flatMap(post => post.map(callback));
 	}
 
 	getPostByLanguage(targetLanguage: HrefTagEnum): Posts {
@@ -82,6 +79,55 @@ export class TranslatedPosts {
 		} else {
 			this.translatedPosts.set(language, new Posts([post]));
 		}
+	}
+
+	static fromMetadata(id: number, postMetadata: PostMetadata): TranslatedPosts {
+		const posts = [];
+		postMetadata.translatedLanguages.forEach(language => {
+			posts.push(new PostEntity({
+				title: postMetadata.translated[language][0].title,
+				content: '',
+				language: language,
+				hasUploadedOnGithub: false,
+				originUrl: postMetadata.translated[language][0].url,
+				uploadedAt: DateUtil.formatYYYYMMDD(new Date()),
+			}, id))
+		})
+		return new TranslatedPosts(posts);
+	}
+
+	get values(): PostEntity[] {
+		return Array.from(this.translatedPosts.values()).flatMap(posts => posts.toEntities);
+	}
+
+	pushPosts(language: HrefTagEnum, alreadyUploadedPosts: Posts) {
+		if (!this.translatedPosts.has(language)) {
+			this.translatedPosts.set(language, alreadyUploadedPosts);
+			return;
+		}
+		this.translatedPosts.get(language).push(alreadyUploadedPosts.toEntities);
+	}
+
+	getComplement(posts: TranslatedPosts) {
+		const complementPosts = [] // 결과물
+		this.translatedPosts.forEach((value, language) => {
+			if (!posts.getPostByLanguage(language)) {
+				complementPosts.push(...value.toEntities);
+				return
+			}
+			const existPosts = this.translatedPosts.get(language);
+			const complementTranslatedPosts = value.getComplement(existPosts);
+			complementPosts.push(...complementTranslatedPosts.toEntities);
+		})
+		return new TranslatedPosts(complementPosts);
+	}
+
+	static fromPosts(alreadyUploadedPosts: Posts) {
+		return new TranslatedPosts(alreadyUploadedPosts.toEntities);
+	}
+
+	forEach(callback: (posts: Posts, language: HrefTagEnum) => void) {
+		this.translatedPosts.forEach(callback);
 	}
 }
 

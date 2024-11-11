@@ -15,6 +15,8 @@ import {MetadataMother} from "../fixture/metadata.mother";
 import {postReader} from "../../src/implemention/post.reader";
 import {postUploader} from "../../src/implemention/post.uploader";
 import {TranslateClientStub} from "../stub/translate-client.stub";
+import "../../src/implemention/strategy/medium.strategy";
+import "../../src/implemention/strategy/tistory.strategy";
 import {chatGptTranslator} from "../../src/implemention/chat-gpt.translator";
 
 describe('Application e2e test', () => {
@@ -34,8 +36,8 @@ describe('Application e2e test', () => {
 			githubUploader,
 			spreadSheetUploader,
 			postReader,
-			chatGptTranslator,
 			// new TranslateClientStub(),
+			chatGptTranslator,
 			rssReader,
 			postUploader,
 		);
@@ -207,7 +209,7 @@ describe('Application e2e test', () => {
 
 				const metadataString = await githubFactory.readOrNull('metadata.json');
 				const metadata = new Metadata(JSON.parse(metadataString));
-				const newPostIndexes = metadata.posts.indexes.filter(index => !previousMetadata.posts.hasPostIndex(index));
+				const newPostIndexes = metadata.posts.indexes.filter(index => !previousMetadata.posts.hasPostById(index));
 
 				expect(newPostIndexes.length).toBeGreaterThan(0);
 				newPostIndexes.forEach(index => {
@@ -240,7 +242,7 @@ describe('Application e2e test', () => {
 					const index = fileName.split('.')[0];
 					expect(index).not.toBe('null');
 					expect(index).not.toBeNaN();
-					expect(metadata.posts.hasPostIndex(Number(index))).toBeTruthy();
+					expect(metadata.posts.hasPostById(Number(index))).toBeTruthy();
 				})
 				expect(posts.length).toBe(metadata.postLength);
 			})
@@ -252,13 +254,9 @@ describe('Application e2e test', () => {
 		})
 	})
 
-	// TODO: Translator Stub 객체 활용하여 e2e 테스트 구현
 	describe('구독 블로그에 번역글을 업로드한다.', () => {
+
 		it('번역글이 없으면 Github에 업로드하지 않는다.', async () => {
-			// await githubFactory.deleteFile('metadata.json');
-			// await githubFactory.deleteDirectory('ko-KR');
-			// await uploadMetadataWithPosts();
-			// await app.cloneOriginalPostsToGithub();
 			await app.uploadPosts();
 		})
 		it.todo('구독 블로그의 언어수만큼 번역글을 Github에 업로드한다.');

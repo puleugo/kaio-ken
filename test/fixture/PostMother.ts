@@ -12,7 +12,7 @@ export class PostMother {
 			uploadedAt: DateUtil.formatYYYYMMDD(fakerKO.date.past()),
 			hasUploadedOnGithub: false,
 			originUrl: fakerKO.internet.url(),
-			language: HrefTagEnum.Korean,
+			language: fakerKO.helpers.enumValue(HrefTagEnum),
 		}, props), props?.index);
 	};
 
@@ -26,7 +26,7 @@ export class PostMother {
 	}
 
 	static createWithTranslatedPosts(props: Partial<PostInterface>, translatedCount: number = 3): PostEntity {
-		const post = PostMother.create(props);
+		const post = PostMother.create({...props, language: HrefTagEnum.Korean});
 		post.translatedPosts = new TranslatedPosts(PostMother.createMany(translatedCount));
 		return post;
 	}

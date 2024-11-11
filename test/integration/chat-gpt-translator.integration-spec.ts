@@ -17,7 +17,7 @@ describe('ChatGptTranslator Integration Test', () => {
 
 		  // then
 		  expect(translatedPosts).toBeInstanceOf(TranslatedPosts);
-		  expect(translatedPosts.getLanguages).toEqual([HrefTagEnum.English]);
+		  expect(translatedPosts.languages).toEqual([HrefTagEnum.English]);
 		  expect(translatedPosts.getPostByLanguage(targetLanguage)).toBeInstanceOf(Posts);
 		  expect(translatedPosts.getPostByLanguage(targetLanguage)).toHaveLength(posts.length);
 	  });

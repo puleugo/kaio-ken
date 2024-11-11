@@ -2,11 +2,16 @@ import {Metadata} from "../domain/metadata";
 import {Posts} from "../domain/posts";
 import {githubRepository, GithubRepositoryInterface} from "../repository/github.repository";
 import {HrefTagEnum} from "../type";
+import {Sitemap} from "../domain/sitemap";
 
 export interface GithubReaderInterface {
 	readMetadata(): Promise<Metadata | null>;
 
 	readPosts(language: HrefTagEnum, shouldTranslatePostIndexes: Set<any>): Promise<Posts>;
+
+	readSitemap(): Promise<Sitemap | null>;
+
+	readTranslatedPosts(language: HrefTagEnum): Promise<Posts>;
 }
 
 class GithubReader implements GithubReaderInterface{
@@ -35,6 +40,22 @@ class GithubReader implements GithubReaderInterface{
 			return post;
 		}))
 		return new Posts(postEntities);
+	}
+
+	async readSitemap(): Promise<Sitemap | null> {
+		const rawXml = await this.repository.readOrNull(Sitemap.path);
+		if (rawXml === null) {
+			return null;
+		}
+		return Sitemap.from(rawXml);
+	}
+
+	async readTranslatedPosts(language: HrefTagEnum): Promise<Posts> {
+		const files = await this.repository.getFilesInDirectory(language);
+		console.log(files)
+
+		// TODO: 구현 ㄱㄱ 없으면 empty posts 반환
+		return new Posts([]);
 	}
 }
 

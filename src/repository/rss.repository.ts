@@ -4,7 +4,6 @@ import {XMLParser} from "fast-xml-parser";
 import {HrefTagEnum, RssResponse} from "../type";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import {BlogEntity} from "../domain/blog.entity";
-import * as fs from "node:fs";
 
 export interface RssRepositoryInterface {
 	readPosts(blog: BlogEntity): Promise<Posts>;

@@ -1,6 +1,6 @@
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import {Posts} from "../domain/posts";
-import {githubReader, GithubReaderInterface} from "./github-reader";
+import {githubReader, GithubReaderInterface} from "./github.reader";
 
 // GPT에게 번역할 언어 별 게시글을 전달합니다.
 export interface ShouldTranslatePostsByLanguage {
@@ -28,6 +28,7 @@ export class PostReader implements PostReaderInterface {
 			throw new Error('metadata가 없습니다.');
 		}
 
+		// 번역해야할 언어 조회
 		const languages = metadata.blogs.subscribeBlogs.languages;
 		const shouldTranslatePostIndexes = new Set<number>();
 		languages.forEach((language) => {

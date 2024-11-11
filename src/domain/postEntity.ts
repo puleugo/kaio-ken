@@ -6,6 +6,12 @@ import {sheets_v4} from "googleapis";
 import * as cheerio from 'cheerio';
 import {TranslatedPosts} from "./translatedPosts";
 import {ImageEntity} from "./image-entity";
+import {GithubUploadFile} from "./github-upload-files";
+
+interface HrefLangTag {
+	link: string;
+	language: HrefTagEnum;
+}
 
 interface RawPostInterface {
 	title: string;
@@ -15,6 +21,7 @@ interface RawPostInterface {
 	originUrl: string;
 	language: HrefTagEnum;
 	images?: ImageEntity[];
+	translatedPosts?: TranslatedPosts;
 }
 
 export interface PostInterface {
@@ -22,8 +29,6 @@ export interface PostInterface {
 	title: string;
 	content: string;
 	uploadedAt: Date;
-	hasUploadedOnGithub: boolean;
-	githubUrl: string | null;
 	originUrl: string | null;
 	images: ImageEntity[];
 	language: HrefTagEnum;
@@ -51,15 +56,23 @@ export class PostEntity implements PostInterface {
 	content: string;
 	readonly sha: string;
 	uploadedAt: Date;
-	hasUploadedOnGithub: boolean = false;
-	githubUrl: string | null = null;
 	originUrl: string;
 	language: HrefTagEnum;
 	translatedPosts: TranslatedPosts;
 	images: Array<ImageEntity> = [];
 
+	get toGithubUploadFiles(): GithubUploadFile {
+		return {
+			path: `${this.language}/${this.index}.md`,
+			content: this.content
+		}
+	};
+
 	get translatedLanguages() {
-		return this.translatedPosts.getLanguages
+		if (!this.translatedPosts) {
+			return [];
+		}
+		return this.translatedPosts.languages;
 	}
 
 	get metadata(): TranslatedPosts['postsWithLanguage'] {
@@ -70,7 +83,7 @@ export class PostEntity implements PostInterface {
 	get toValue() :sheets_v4.Schema$ValueRange {
 		return {
 			values: [
-				[this.title, this.content, this.uploadedAt.toISOString(), this.hasUploadedOnGithub, this.githubUrl, this.originUrl, this.language]
+				[this.title, this.content, this.uploadedAt.toISOString(), this.originUrl, this.language]
 			]
 		}
 	};
@@ -93,7 +106,7 @@ export class PostEntity implements PostInterface {
 		this.originUrl = props.originUrl;
 		this.language = props.language;
 		this.sha = crypto.createHash('sha1').update(this.content).digest('hex');
-		this.translatedPosts = new TranslatedPosts([]);
+		this.translatedPosts = props.translatedPosts
 	}
 
 	hasPostChanged(post: PostEntity) {
@@ -104,6 +117,36 @@ export class PostEntity implements PostInterface {
 		this.title = props.title;
 		this.content = props.content;
 		this.language = props.language;
+		this.originUrl = '';
+	}
+
+	get HrefLangTags(): HrefLangTag[] {
+		const originalWithTranslated: PostEntity[] = [this]
+		if (this.translatedPosts) {
+			originalWithTranslated.concat(this.translatedPosts.values);
+		}
+		return originalWithTranslated.map(post => ({
+			link: post.originUrl,
+			language: post.language,
+		}));
+	}
+
+	get hrefLangInjectionCode() {
+		const hrefLangArrayString = JSON.stringify(this.HrefLangTags)
+		return `
+			<script>
+			document.addEventListener(\'DOMContentLoaded\', () => {
+				const hreflangs = ${hrefLangArrayString}
+	
+				hreflangs.forEach(({ href, hreflang }) => {
+			        const link = document.createElement('link');
+					link.rel = 'alternate';
+			        link.href = href;
+				    link.hreflang = hreflang;
+				    document.head.appendChild(link);
+				});
+			});
+			</script>`;
 	}
 
 	static fromMetadata(index: number,postMetadata: PostMetadata) {
@@ -113,7 +156,8 @@ export class PostEntity implements PostInterface {
 			uploadedAt: postMetadata.original.uploadedAt,
 			hasUploadedOnGithub: false,
 			originUrl: postMetadata.original.url,
-			language: postMetadata.original.language
+			language: postMetadata.original.language,
+			translatedPosts: TranslatedPosts.fromMetadata(index,postMetadata),
 		}, index)
 	}
 }

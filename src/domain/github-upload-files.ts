@@ -48,6 +48,7 @@ export class GithubUploadFileBuilder {
 
 		if (this.translatedPosts !== null) {
 			this.metadata.addTranslatedPost(this.translatedPosts);
+			this.metadata.blogs.updateSubscribeBlogs(this.translatedPosts);
 			result.push(...this.translatedPosts.githubUploadFile)
 		}
 

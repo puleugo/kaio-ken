@@ -3,7 +3,6 @@ import {google} from "googleapis";
 import {Blogs} from "../domain/blogs";
 import {envManager, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
-import {BlogEntity} from "../domain/blog.entity";
 import { sheets_v4 } from 'googleapis/build/src/apis/sheets/v4';
 
 export interface SpreadSheetRepositoryInterface {
@@ -13,7 +12,7 @@ export interface SpreadSheetRepositoryInterface {
 
 	readBlogs(): Promise<Blogs>
 
-	updatePublisherBlog(posts: Posts, publisherBlog: BlogEntity): Promise<void>;
+	update(posts: Posts, blogs: Blogs): Promise<void>;
 
 	truncate(range: string): Promise<void>;
 }
@@ -51,18 +50,12 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 		return new Posts([]);
 	}
 
-	async updatePublisherBlog(clonedPosts: Posts, publisherBlog: BlogEntity): Promise<void> {
+	async update(translatedPosts: Posts, blogs: Blogs): Promise<void> {
 		this.authenticateIfNeeded();
-
-		publisherBlog.fetchPublishedInfo(clonedPosts)
-
 		const values = await this.getSheetValues('Blogs!A2:G100')
 		if (!values) {
 			throw new Error('갱신할 블로그가 스프레드 시트에서 사라졌습니다. 스프레드 시트를 확인 후 다시 실행해주세요.');
 		}
-
-		const blogs = new Blogs(values);
-		blogs.update(publisherBlog)
 
 		await this.write(blogs.toValuesWithRange)
 		this.logger.debug('갱신에 성공했습니다.')

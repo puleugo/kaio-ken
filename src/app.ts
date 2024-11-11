@@ -25,9 +25,9 @@ export class App {
 	async uploadPosts() {
 		const postsByLanguage = await this.postReader.readShouldTranslatePosts();
 		const translatedPosts = await this.translator.translatePostsByLanguages(postsByLanguage);
-		// TODO: TranslatedPost 업로드 후 갱신된 metadata를 업로드하도록 순서 변경
-		const metadata = await this.githubUploader.uploadTranslatedPosts(translatedPosts);
- 		await this.postUploader.upload(metadata, translatedPosts);
+		const uploadedTranslatedPosts = await this.postUploader.upload(translatedPosts);
+		const metadata = await this.githubUploader.uploadTranslatedPosts(uploadedTranslatedPosts);
+		await this.githubUploader.uploadSitemap(metadata);
 	}
 
 	// TODO: 자동 SpreadSheet 업데이트 기능

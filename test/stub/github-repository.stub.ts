@@ -1,6 +1,7 @@
 import {GithubRepositoryInterface} from "../../src/repository/github.repository";
 import {GithubUploadFile} from "../../src/domain/github-upload-files";
 import {Metadata} from "../../src/domain/metadata";
+import {Sitemap} from "../../src/domain/sitemap";
 
 export class GithubRepositoryStub implements GithubRepositoryInterface {
     deleteFile(filePath: string): void {
@@ -8,6 +9,7 @@ export class GithubRepositoryStub implements GithubRepositoryInterface {
     }
 	private _uploadCount: number = 0;
 	metadata: Metadata | null = null;
+	sitemap: Sitemap | null = null;
 
 	get uploadCount(): number {
 		return this._uploadCount;

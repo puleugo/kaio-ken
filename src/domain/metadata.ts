@@ -5,6 +5,8 @@ import {PostEntity} from "./postEntity";
 import {DateUtil} from "../util/util/DateUtil";
 import {BlogEntity} from "./blog.entity";
 import {TranslatedPosts} from "./translatedPosts";
+import {FileUtil} from "../util/util/FileUtil";
+import {HrefTagEnum} from "../type";
 
 export interface MetadataJson {
 	posts: PostsMetadata;
@@ -21,6 +23,8 @@ interface DomainConstructor {
 	posts: Posts;
 	blogs: Blogs;
 }
+
+
 
 export class Metadata {
 
@@ -75,7 +79,7 @@ export class Metadata {
 	}
 
 	get json(): string {
-		return JSON.stringify(this.jsonObject, null, 2)
+		return JSON.stringify(this.jsonObject, null, FileUtil.fileSpaces)
 	}
 
 	get lastExecutedAt(): Date {
@@ -127,7 +131,7 @@ export class Metadata {
 
 	addTranslatedPost(translatedPosts: TranslatedPosts) {
 		// 번역해야하는 게시글을 각 posts에 추가
-		const posts = translatedPosts.getLanguages.map(language => translatedPosts.getPostByLanguage(language).toEntities).flat();
+		const posts = translatedPosts.languages.map(language => translatedPosts.getPostByLanguage(language).toEntities).flat();
 		posts.forEach(post => {
 			this._posts.addTranslatedPost(post.index, post);
 		})
@@ -137,5 +141,9 @@ export class Metadata {
 
 	getPostById(index: number) {
 		return this._posts.getById(index);
+	}
+
+	static fromString(string: string) {
+		return new Metadata(JSON.parse(string));
 	}
 }

@@ -9,9 +9,12 @@ export interface PostsMetadata {
 	[index: number]: PostMetadata;
 }
 
+
+
 export class Posts {
 	private _blog: BlogEntity | null;
 	private posts: PostEntity[]
+
 	get imageGithubFiles(): GithubUploadFile[] {
 		return this.posts.flatMap(post => post.images.map(image => ({
 			path: `images/${post.index}/${image.filename}`,
@@ -23,7 +26,7 @@ export class Posts {
 		return this.posts.flatMap(post => post.images.map(image => image.url));
 	};
 
-	hasPostIndex(index: number): boolean {
+	hasPostById(index: number): boolean {
 		return this.posts.some(post => post.index === index);
 	};
 
@@ -32,6 +35,7 @@ export class Posts {
 	}
 
 	get last(): PostEntity {
+		this.posts.sort((a, b) => a.index - b.index);
 		return this.posts[this.posts.length - 1];
 	}
 
@@ -85,7 +89,7 @@ export class Posts {
 					uploadedAt: DateUtil.formatYYYYMMDD(post.uploadedAt),
 				},
 				translatedLanguages: post.translatedLanguages,
-				translated: post.translatedPosts.postsWithLanguage,
+				translated: post.translatedPosts?.postsWithLanguage || {},
 			}
 		)
 		return result;
@@ -115,20 +119,26 @@ export class Posts {
 		return new Posts(this.posts.filter(post => !post.translatedLanguages.includes(language)));
 	}
 
-	getById(id: number): PostEntity | null {
-		return this.posts.find(post => post.index === id) || null;
+	getById(id: number): PostEntity {
+		return this.posts.find(post => post.index === id);
 	}
 
-	async map(callback: (post: PostEntity) => Promise<PostEntity>): Promise<PostEntity[]> {
-		const promises = this.posts.map(callback);
-		return Promise.all(promises);
+	map<U>(callback: (post: PostEntity) => U): U[] {
+		return this.posts.map(callback);
 	}
 
-	// FIXME: TranslatedPost 중복 제거
-	addTranslatedPost(postId: number, post: PostEntity) {
-		const target = this.posts.find(p => p.index === postId);
-		if (target) {
-			target.translatedPosts.push(post.language, post);
-		}
+	addTranslatedPost(postId: number, post: PostEntity): void {
+		const targetPost = this.posts.find(post => post.index === postId);
+		if (!targetPost)
+			return;
+		const hasTranslatedPostAlready = targetPost.translatedPosts.getPostByIdAndLanguage(postId, post.language);
+		if (hasTranslatedPostAlready)
+			return;
+		targetPost.translatedPosts.push(post.language, post);
+	}
+
+
+	getComplement(existPosts: Posts): Posts {
+		return new Posts(this.posts.filter(post => !existPosts.hasPost(post)));
 	}
 }

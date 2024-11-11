@@ -125,6 +125,9 @@ export class GithubRepository implements GithubRepositoryInterface {
 			headers: this.headers,
 			validateStatus: (status =>  status < 500)
 		});
+		if (response.status !== 200) {
+			return [];
+		}
 		return response.data;
 	}
 

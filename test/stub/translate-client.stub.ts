@@ -1,4 +1,3 @@
-import {Posts} from "../../src/domain/posts";
 import {TranslatedPosts} from "../../src/domain/translatedPosts";
 import {TranslatorInterface} from "../../src/implemention/chat-gpt.translator";
 import {PostEntity} from "../../src/domain/postEntity";

@@ -2,12 +2,12 @@ import {BlogEntity, BlogMetadata} from "./blog.entity";
 import {sheets_v4} from "googleapis";
 import {Posts} from "./posts";
 import {blogLanguageMap, HrefTagEnum} from "../type";
+import {TranslatedPosts} from "./translatedPosts";
 
 export type BlogsMetadata = Array<BlogMetadata>;
 
 export class Blogs {
 	private blogs: BlogEntity[];
-
 	constructor(values: string[][] | BlogEntity[]) {
 		let blogs: BlogEntity[] = [];
 		if (values.length === 0) {
@@ -118,7 +118,26 @@ export class Blogs {
 		return new Set(languages);
 	}
 
+	get toEntities(): Array<BlogEntity> {
+		return this.blogs;
+	}
+
+
 	forEach(param: (blog: BlogEntity) => void) {
 		this.blogs.forEach(param);
+	}
+
+	map<U>(param: (blog: BlogEntity) => U): U[] {
+		return this.blogs.map(param);
+	}
+
+	updateSubscribeBlogs(translatedPosts: TranslatedPosts) {
+		translatedPosts.forEach((posts,language) => {
+			this.subscribeBlogs.map((blog) => {
+				if (blog.language === language) {
+					blog.fetchPublishedInfo(posts);
+				}
+			})
+		})
 	}
 }

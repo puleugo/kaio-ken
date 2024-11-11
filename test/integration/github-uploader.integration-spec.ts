@@ -6,6 +6,10 @@ import {Posts} from "../../src/domain/posts";
 import {Blogs} from "../../src/domain/blogs";
 import {BlogMother} from "../fixture/blog.mother";
 import {Metadata} from "../../src/domain/metadata";
+import {githubReader} from "../../src/implemention/github.reader";
+import {MetadataMother} from "../fixture/metadata.mother";
+import {envManager} from "../../src/util/config/env-manager";
+import {SitemapMother} from "../fixture/sitemap.mother";
 
 describe('GithubUploader Integration Test', () => {
 	let githubUploader: GithubUploaderInterface;
@@ -13,10 +17,11 @@ describe('GithubUploader Integration Test', () => {
 	let loggerStub: LoggerStub;
 
 	beforeAll(() => {
+		envManager.loadDotEnv();
 		githubRepositoryStub = new GithubRepositoryStub();
 		loggerStub = new LoggerStub()
 
-		githubUploader = new GithubUploader(githubRepositoryStub, loggerStub);
+		githubUploader = new GithubUploader(githubReader,githubRepositoryStub, loggerStub);
 	})
 
 	afterEach(() => {
