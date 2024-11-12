@@ -16,13 +16,13 @@ export class PostMother {
 		}, props), props?.index);
 	};
 
-	static createMany(time: number = 3, startIndex?: number): PostEntity[] {
-		if (startIndex >= 0) {
-			return Array.from({length: time}, (_, index) => PostMother.create()).sort((a, b) => a.uploadedAt < b.uploadedAt ? -1 : 1).map((post, index) => {
-				post.index = startIndex + index; return post;
+	static createMany(time: number = 3, props?: Partial<RawPostInterface>): PostEntity[] {
+		if (props?.index != undefined && props.index >= 0) {
+			return Array.from({length: time}, (_, index) => PostMother.create(props)).sort((a, b) => a.uploadedAt < b.uploadedAt ? -1 : 1).map((post, index) => {
+				post.index = props.index + index; return post;
 			})
 		}
-		return Array.from({length: time}, () => PostMother.create()).sort((a, b) => a.uploadedAt < b.uploadedAt ? -1 : 1);
+		return Array.from({length: time}, () => PostMother.create(props)).sort((a, b) => a.uploadedAt < b.uploadedAt ? -1 : 1);
 	}
 
 	static createWithTranslatedPosts(props: Partial<RawPostInterface>, translatedCount: number = 3): PostEntity {

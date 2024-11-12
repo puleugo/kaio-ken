@@ -101,7 +101,7 @@ describe('Metadata Unit Test', () => {
 	});
 
 	it('신규 게시글을 추가한다.',()=>{
-		const raw = PostMother.createMany(10, 0);
+		const raw = PostMother.createMany(10, {index: 0});
 		const posts = new Posts(raw.slice(0, 5));
 		const newPost = new Posts(raw.slice(5, 10));
 		const metadata = new Metadata({posts: posts.metadata, blogs: MetadataMother.createBlogs(), lastExecutedAt})
@@ -112,7 +112,7 @@ describe('Metadata Unit Test', () => {
 		expect(updatedPosts).toHaveLength(posts.length + newPost.length);
 	})
 	it('이미 존재하는 게시글은 무시한다.',()=>{
-		const raw = PostMother.createMany(10, 0);
+		const raw = PostMother.createMany(10, {index: 0});
 		const posts = new Posts(raw.slice(0, 5));
 		const newPost = new Posts(raw.slice(0, 10));
 		const metadata = new Metadata({posts: posts.metadata, blogs: MetadataMother.createBlogs(),lastExecutedAt})
@@ -123,7 +123,7 @@ describe('Metadata Unit Test', () => {
 		expect(updatedPosts).toHaveLength(raw.length);
 	})
 	it('기존 게시글의 번역글이 추가된다.', () => {
-		const posts = PostMother.createMany(5, 0);
+		const posts = PostMother.createMany(5, {index: 0});
 		const blogs = new Blogs(BlogMother.createMany(3));
 		const metadata = new Metadata({posts: new Posts(posts).metadata, blogs: blogs.metadata, lastExecutedAt})
 		const postsWithTranslated = new Posts(posts.map(post => {

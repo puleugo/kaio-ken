@@ -114,7 +114,7 @@ export class TranslatedPosts {
 	getComplement(posts: TranslatedPosts) {
 		const complementPosts = [] // 결과물
 		this.translatedPosts.forEach((value, language) => {
-			if (!posts.getPostByLanguage(language)) {
+			if (posts.getPostByLanguage(language).isEmpty) {
 				complementPosts.push(...value.toEntities);
 				return
 			}

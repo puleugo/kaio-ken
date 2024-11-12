@@ -24,7 +24,7 @@ describe('RssReader Integration Test', () => {
 
 	it('마지막 배포 게시글 이후의 게시글을 가져온다.', async () => {
 		spreadSheetRepositoryStub.blogs = new Blogs([BlogMother.create({lastPublishedIndex: 3, type: 'PUBLISHER'})])
-		rssRepositoryStub.posts = new Posts(PostMother.createMany(5, 1));
+		rssRepositoryStub.posts = new Posts(PostMother.createMany(5, {index: 1}));
 		const [posts, _] = await rssReader.readBlogsAndPosts();
 		expect(posts).toHaveLength(2)
 	})
