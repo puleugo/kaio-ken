@@ -30,6 +30,6 @@ inputs:
 
   METHOD:
     description: 'Methods to execute in the action. Options: ["READ", "PUBLISH", "UPDATE_SPREAD_SHEET"].'
-    required: true
+    required: false
     default: '["READ"]'
 
