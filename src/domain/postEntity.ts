@@ -13,7 +13,7 @@ interface HrefLangTag {
 	language: HrefTagEnum;
 }
 
-interface RawPostInterface {
+export interface RawPostInterface {
 	title: string;
 	content: string;
 	uploadedAt: string;
@@ -22,6 +22,7 @@ interface RawPostInterface {
 	language: HrefTagEnum;
 	images?: ImageEntity[];
 	translatedPosts?: TranslatedPosts;
+	index?: number;
 }
 
 export interface PostInterface {

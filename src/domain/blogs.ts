@@ -102,6 +102,9 @@ export class Blogs {
 	}
 
 	isSamePublisherBlog(blog: BlogEntity): boolean {
+		if (!this.publisherBlog) {
+			return false;
+		}
 		return this.publisherBlog.rssUrl === blog.rssUrl;
 	}
 

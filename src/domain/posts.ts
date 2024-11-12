@@ -100,7 +100,8 @@ export class Posts {
 	}
 
 	push(post: PostEntity[]) {
-		this.posts.push(...post);
+		const newPosts = post.filter(post => !this.hasPost(post));
+		this.posts.push(...newPosts);
 	}
 
 	hasPost(post: PostEntity) {
