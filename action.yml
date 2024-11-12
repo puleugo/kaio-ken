@@ -29,10 +29,7 @@ inputs:
     required: true
 
   METHOD:
-    description: 'EXECUTE METHOD'
+    description: 'Execute Methods', example: '["READ", "PUBLISH", "UPDATE_SPREAD_SHEET"]'
     required: true
-    options:
-      - 'READ'
-      - 'PUBLISH'
-      - 'UPDATE_SPREAD_SHEET'
+    default: '["READ"]'
 
