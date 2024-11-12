@@ -55,7 +55,6 @@ class GithubReader implements GithubReaderInterface{
 
 	async readTranslatedPosts(language: HrefTagEnum): Promise<Posts> {
 		const files = await this.repository.getFilesInDirectory(language);
-		console.log(files)
 
 		// TODO: 구현 ㄱㄱ 없으면 empty posts 반환
 		return new Posts([]);
