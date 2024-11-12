@@ -20,14 +20,14 @@
 
 
 
-## 원본 vs 번역본
-
-{% embed url="https://ko.puleugo.dev/209" %}
-Korean version
-{% endembed %}
+## 번역본
 
 {% embed url="https://en.puleugo.dev/refactoring-monster-methods-and-improving-performance-refactor-safely-0fe2f2140d22" %}
-English version
+Translated
+{% endembed %}
+
+{% embed url="https://ko.puleugo.dev/209" %}
+Original
 {% endembed %}
 
 
