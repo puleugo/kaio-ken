@@ -64,7 +64,7 @@ export class Metadata {
 			if ((props as JsonConstructor).lastExecutedAt !== undefined) {
 				this._lastExecutedAt = new Date((props as JsonConstructor).lastExecutedAt);
 			} else {
-				throw new Error('lastExecutedAt이 없습니다.');
+				this._lastExecutedAt = new Date();
 			}
 		}
 	}
