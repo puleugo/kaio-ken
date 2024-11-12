@@ -256,7 +256,8 @@ describe('Application e2e test', () => {
 	describe('구독 블로그에 번역글을 업로드한다.', () => {
 
 		it('번역글이 없으면 Github에 업로드하지 않는다.', async () => {
-			await app.uploadPosts();
+			await app.cloneOriginalPostsToGithub();
+			// await app.uploadPosts();
 		})
 		it.todo('구독 블로그의 언어수만큼 번역글을 Github에 업로드한다.');
 		it.todo('구독 블로그의 마지막 번역게시글을 갱신한다.')

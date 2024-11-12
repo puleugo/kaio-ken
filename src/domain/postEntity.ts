@@ -101,6 +101,7 @@ export class PostEntity implements PostInterface {
 		});
 
 		this.content = html2md(props.content);
+		console.log(this.content);
 		this.index = index;
 		this.title = props.title;
 		this.uploadedAt = new Date(props.uploadedAt);

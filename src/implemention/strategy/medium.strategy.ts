@@ -32,7 +32,7 @@ export class MediumStrategy extends PlatformStrategy {
 			{
 				'title': post.title, // 이 제목은 SEO를 위해 사용된 100자가 넘을 시 무시됨
 				'contentFormat': 'markdown',
-				'content': `<h1>${post.title}</h1> `+post.content, // 콘텐츠에 h1을 추가해야 함.
+				'content':  `# ${post.title}\n\n## Published By Kaioken\n\n  \n\n`+post.content, // 콘텐츠에 h1을 추가해야 함.
 				'publishStatus': 'public'
 			},
 			{
@@ -40,6 +40,9 @@ export class MediumStrategy extends PlatformStrategy {
 				validateStatus: (status => status < 500)
 			}
 		);
+		if (result.status === 429) {
+			throw new Error(`금일 Medium API 호출량을 초과했습니다.`);
+		}
 		if (result.status !== 201) {
 			throw new Error('Medium API 호출에 실패했습니다.');
 		}

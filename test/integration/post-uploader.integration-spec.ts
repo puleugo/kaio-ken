@@ -29,7 +29,8 @@ describe('PostUploader Integration Test', () => {
 
 		it('게시글을 업로드 한다.', async () => {
 			const strategy = new MediumStrategy(envManager);
-			const postsEntities = [PostMother.create({language: HrefTagEnum.English, originUrl: 'https://exmample.com'})];
+			const content = `<h3>Test</h3><p>This is Exmaple Content</p> <br/> <h3>Test2</h3> <br/> <p>MARKDOWN TEST</p>`;
+			const postsEntities = [PostMother.create({language: HrefTagEnum.English, originUrl: 'https://exmample.com', content})];
 			const posts = new TranslatedPosts(postsEntities)
 
 			const result = await strategy.uploadPosts(posts)

@@ -73,8 +73,7 @@ export class Blogs {
 	updateByNewData(newPosts: Posts, newBlogs: Blogs): void {
 		this.blogs.forEach((blog) => {
 			if (blog.isPublisher) {
-				blog.addPosts(newPosts);
-				blog.fetchPublishedAt();
+				blog.fetchPublishedInfo(newPosts);
 			}
 			// 해당 블로그 내용을 머지
 			if (newBlogs.hasBlog(blog)) {
