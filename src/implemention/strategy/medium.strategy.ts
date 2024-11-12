@@ -37,9 +37,12 @@ export class MediumStrategy extends PlatformStrategy {
 			},
 			{
 				headers: {Authorization: `Bearer ${this.token}`},
-				validateStatus: (status => status < 400)
+				validateStatus: (status => status < 500)
 			}
 		);
+		if (result.status !== 201) {
+			throw new Error('Medium API 호출에 실패했습니다.');
+		}
 		post.originUrl = result.data.data.url;
 		return post;
 	}
@@ -60,6 +63,8 @@ export class MediumStrategy extends PlatformStrategy {
 				validateStatus: (status => status < 400)
 			})
 			if (result.status !== 200) {
+				console.log(result.headers);
+				console.log(result.data);
 				throw new Error('Medium API 호출에 실패했습니다.');
 			}
 			return result.data.data.id;

@@ -4,11 +4,11 @@ import {ZodObject} from 'zod'
 import OpenAI from "openai";
 import {ZodRawShape} from "zod/lib/types";
 
-export interface AiClientInterface {
+export interface AiRepositoryInterface {
 	chat<ZOD_RAW extends ZodRawShape>(system: string, user: string, json: {zod: ZodObject<ZOD_RAW>, name: string}): Promise<any>;
 }
 
-class ChatGptTranslatorRepository implements AiClientInterface{
+class ChatGptTranslatorRepository implements AiRepositoryInterface{
 
 	private openai = null;
 	constructor(private readonly envManager: EnvManager) {}

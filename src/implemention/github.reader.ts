@@ -18,11 +18,14 @@ class GithubReader implements GithubReaderInterface{
 	constructor(private readonly repository: GithubRepositoryInterface) {
 	}
 
+
+
     async readMetadata(): Promise<Metadata | null> {
 		const content = await this.repository.readOrNull(Metadata.path);
 		return content ? new Metadata(JSON.parse(content)) : null;
     }
 
+	// shouldTranslatePostIds를 기준으로 번역할 게시글 콜렉션을 조회합니다.
 	async readPosts(language: HrefTagEnum, shouldTranslatePostIds: Set<number>): Promise<Posts> {
 		const metadata = await this.readMetadata();
 		if (metadata === null) {

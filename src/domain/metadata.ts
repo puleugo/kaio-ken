@@ -6,7 +6,6 @@ import {DateUtil} from "../util/util/DateUtil";
 import {BlogEntity} from "./blog.entity";
 import {TranslatedPosts} from "./translatedPosts";
 import {FileUtil} from "../util/util/FileUtil";
-import {HrefTagEnum} from "../type";
 
 export interface MetadataJson {
 	posts: PostsMetadata;
@@ -120,7 +119,7 @@ export class Metadata {
 			this._blogs.updatePublisherBlog(blogs.publisherBlog);
 		}
 		// 2. 게시글 인덱싱 및 게시글 업데이트
-		newPosts.fillIndex(this._blogs.publisherBlog.lastPublishedIndex)
+		newPosts.fillIndex(this._blogs.publisherBlog.lastPublishedId)
 		this._posts.push(newPosts.toEntities);
 
 		// 3. 블로그 업데이트

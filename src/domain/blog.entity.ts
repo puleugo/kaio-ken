@@ -61,7 +61,7 @@ export class BlogEntity{
 		this.value.lastPublishedIndex += publishedPosts.length;
 	}
 
-	get lastPublishedIndex(): number {
+	get lastPublishedId(): number {
 		return this.value.lastPublishedIndex;
 	};
 	get isPublisher(): boolean {

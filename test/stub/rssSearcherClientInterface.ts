@@ -1,10 +1,10 @@
 import {Posts} from "../../src/domain/posts";
 import {rssRepository, RssRepositoryInterface} from "../../src/repository/rss.repository";
 import {spreadSheetRepository, SpreadSheetRepositoryInterface} from "../../src/repository/spread-sheet.repository";
-import {OriginalContentsReaderInterface} from "../../src/implemention/rss.reader";
+import {OriginalContentReaderInterface} from "../../src/implemention/rss.reader";
 import {Blogs} from "../../src/domain/blogs";
 
-class RssReaderStub implements OriginalContentsReaderInterface {
+class RssReaderStub implements OriginalContentReaderInterface {
 	constructor(
 		private readonly rssRepository: RssRepositoryInterface,
 		private readonly spreadSheetRepository: SpreadSheetRepositoryInterface

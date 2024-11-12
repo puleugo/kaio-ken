@@ -95,10 +95,6 @@ export class Posts {
 		return result;
 	}
 
-	filterNewPosts(lastSyncedAt: Date = DateUtil.min): Posts {
-		return new Posts(this.posts.filter(post => dayjs(post.uploadedAt).isAfter(lastSyncedAt)), this._blog);
-	}
-
 	fillIndex(startIndex: number): Posts {
 		return new Posts(this.posts.map((post, index) => {post.index = startIndex + index+1; return post}));
 	}

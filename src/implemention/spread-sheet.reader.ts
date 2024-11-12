@@ -5,7 +5,7 @@ export interface SpreadSheetReaderInterface {
 	readBlogs(): Promise<Blogs>;
 }
 
-class SpreadSheetReader implements SpreadSheetReaderInterface {
+export class SpreadSheetReader implements SpreadSheetReaderInterface {
 	constructor(private readonly spreadSheetRepository: SpreadSheetRepositoryInterface) {}
 
 	async readBlogs(): Promise<Blogs> {

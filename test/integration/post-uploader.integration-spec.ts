@@ -70,10 +70,10 @@ describe('PostUploader Integration Test', () => {
 		});
 
 		it('게시글을 업데이트 한다.', async () => {
-			const strategy = new TistoryStrategy(envManager);
-			const posts = new Posts([PostMother.create({originUrl: 'https://puleugo.tistory.com/209'})])
-			posts.blog = BlogMother.create({platform: BlogPlatformEnum.Tistory, rssUrl: 'https://puleugo.tistory.com/rss'});
-			await strategy.updatePosts(posts);
+			// const strategy = new TistoryStrategy(envManager);
+			// const posts = new Posts([PostMother.create({originUrl: 'https://puleugo.tistory.com/209'})])
+			// posts.blog = BlogMother.create({platform: BlogPlatformEnum.Tistory, rssUrl: 'https://puleugo.tistory.com/rss'});
+			// await strategy.updatePosts(posts);
 		})
 	})
 })

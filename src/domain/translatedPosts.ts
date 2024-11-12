@@ -66,6 +66,9 @@ export class TranslatedPosts {
 	}
 
 	getPostByLanguage(targetLanguage: HrefTagEnum): Posts {
+		if (!this.translatedPosts.has(targetLanguage)) {
+			return new Posts([]);
+		}
 		return this.translatedPosts.get(targetLanguage);
 	}
 

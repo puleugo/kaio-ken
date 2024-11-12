@@ -3,17 +3,18 @@ import {rssRepository, RssRepositoryInterface} from "../repository/rss.repositor
 import {spreadSheetRepository, SpreadSheetRepositoryInterface} from "../repository/spread-sheet.repository";
 import {Blogs} from "../domain/blogs";
 
-export interface OriginalContentsReaderInterface {
+export interface OriginalContentReaderInterface {
 	readBlogsAndPosts(): Promise<[Posts, Blogs]>;
 }
 
-export class RssReader implements OriginalContentsReaderInterface {
+export class RssReader implements OriginalContentReaderInterface {
 	constructor(
 		private readonly rssRepository: RssRepositoryInterface,
 		private readonly spreadSheetRepository: SpreadSheetRepositoryInterface,
 	) {
 	}
 
+	// RSS로 조회된 게시글과 블로그를 응답합니다.
 	async readBlogsAndPosts(): Promise<[Posts, Blogs]> {
 		const blogs = await this.spreadSheetRepository.readBlogs();
 

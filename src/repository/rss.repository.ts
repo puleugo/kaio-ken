@@ -6,6 +6,7 @@ import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.
 import {BlogEntity} from "../domain/blog.entity";
 
 export interface RssRepositoryInterface {
+	// RSS를 통해 게시글을 조회합니다. 조회한 게시글의 ID는 존재하지 않습니다.
 	readPosts(blog: BlogEntity): Promise<Posts>;
 }
 
@@ -22,17 +23,9 @@ export class RssRepository implements RssRepositoryInterface {
 
 		const posts = this.parsingTistoryRss(rss)
 		posts.blog = blog;
-		const newPosts = posts.filterNewPosts(blog.lastPublishedAt);
-		this.logger.debug(`${blog.lastPublishedAt} 이후의 새로운 포스트 ${newPosts.length}개를 찾았습니다.`);
+		this.logger.debug(`${blog.lastPublishedAt} 이후의 새로운 포스트 ${posts.length}개를 찾았습니다.`);
 
-		// for (const post of newPosts.toEntities) {
-		// 	await Promise.all(post.images.map(async image => {
-		// 		image.content = await this.getImage(image.url);
-		// 		post.content = post.content.replace(`${image.url}`, image.id);
-		// 	}));
-		// }
-
-		return newPosts;
+		return posts;
 	}
 
 	private parsingTistoryRss(raw: RssResponse): Posts {
@@ -48,11 +41,6 @@ export class RssRepository implements RssRepositoryInterface {
 				language: HrefTagEnum.Korean,
 			})
 		));
-	}
-
-	private async getImage(url: string): Promise<Buffer> {
-		const response = await fetch(url);
-		return Buffer.from(await response.arrayBuffer());
 	}
 }
 

@@ -18,13 +18,13 @@ export class BlogMother {
 
 	static createMany(length = fakerKO.number.int({min: 1, max: 10})): BlogEntity[] {
 		const publisherBlog = BlogMother.create({type: 'PUBLISHER'});
-		const subscriberBlogs: BlogEntity[] = Array.from({length: length-1}, () => BlogMother.create({type: 'SUBSCRIBER', lastPublishedIndex: fakerKO.number.int({min: 0, max: publisherBlog.lastPublishedIndex})}));
+		const subscriberBlogs: BlogEntity[] = Array.from({length: length-1}, () => BlogMother.create({type: 'SUBSCRIBER', lastPublishedIndex: fakerKO.number.int({min: 0, max: publisherBlog.lastPublishedId})}));
 		return [publisherBlog, ...subscriberBlogs];
 	}
 
 	static createManyWithRealPublisher(length = fakerKO.number.int({min: 1, max: 10})): BlogEntity[] {
 		const publisherBlog = BlogMother.createRealPublisher();
-		const subscriberBlogs: BlogEntity[] = Array.from({length: length-1}, () => BlogMother.create({type: 'SUBSCRIBER', language: HrefTagEnum.Korean, lastPublishedIndex: fakerKO.number.int({min: 0, max: publisherBlog.lastPublishedIndex})}));
+		const subscriberBlogs: BlogEntity[] = Array.from({length: length-1}, () => BlogMother.create({type: 'SUBSCRIBER', language: HrefTagEnum.Korean, lastPublishedIndex: fakerKO.number.int({min: 0, max: publisherBlog.lastPublishedId})}));
 		return [publisherBlog, ...subscriberBlogs];
 	}
 

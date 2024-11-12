@@ -1,4 +1,4 @@
-import {RssReader, OriginalContentsReaderInterface} from "../../src/implemention/rss.reader";
+import {RssReader, OriginalContentReaderInterface} from "../../src/implemention/rss.reader";
 import {RssRepositoryStub} from "../stub/rss-repository.stub";
 import {SpreadSheetRepositoryStub} from "../stub/spread-sheet-repository.stub";
 import {PostMother} from "../fixture/PostMother";
@@ -7,7 +7,7 @@ import {Blogs} from "../../src/domain/blogs";
 import {Posts} from "../../src/domain/posts";
 
 describe('RssReader Integration Test', () => {
-	let rssReader: OriginalContentsReaderInterface;
+	let rssReader: OriginalContentReaderInterface;
 	let rssRepositoryStub: RssRepositoryStub;
 	let spreadSheetRepositoryStub: SpreadSheetRepositoryStub
 
@@ -22,9 +22,16 @@ describe('RssReader Integration Test', () => {
 		spreadSheetRepositoryStub.reset();
 	})
 
+	it('마지막 배포 게시글 이후의 게시글을 가져온다.', async () => {
+		spreadSheetRepositoryStub.blogs = new Blogs([BlogMother.create({lastPublishedIndex: 3, type: 'PUBLISHER'})])
+		rssRepositoryStub.posts = new Posts(PostMother.createMany(5, 1));
+		const [posts, _] = await rssReader.readBlogsAndPosts();
+		expect(posts).toHaveLength(2)
+	})
+
 	it('게시글을 응답한다.', async () => {
 		rssRepositoryStub.posts = new Posts(PostMother.createMany(3));
-		spreadSheetRepositoryStub.blogs = new Blogs(BlogMother.createMany(3));
+		spreadSheetRepositoryStub.blogs = new Blogs([BlogMother.create({type: 'PUBLISHER', lastPublishedIndex: 0})]);
 		const [posts, _] = await rssReader.readBlogsAndPosts()
 		expect(posts).toBeDefined();
 		expect(posts.length).toBe(3);

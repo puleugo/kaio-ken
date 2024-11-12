@@ -1,5 +1,5 @@
 import {spreadSheetUploader, SpreadSheetUploaderInterface} from "./implemention/spread-sheet.uploader";
-import {OriginalContentsReaderInterface, rssReader} from "./implemention/rss.reader";
+import {OriginalContentReaderInterface, rssReader} from "./implemention/rss.reader";
 import {githubUploader, GithubUploaderInterface} from "./implemention/github.uploader";
 import {postReader, PostReaderInterface} from "./implemention/post.reader";
 import {postUploader, PostUploader} from "./implemention/post.uploader";
@@ -11,14 +11,14 @@ export class App {
 		private readonly spreadSheetUploader: SpreadSheetUploaderInterface,
 		private readonly postReader: PostReaderInterface,
 		private readonly translator: TranslatorInterface,
-		private readonly originalContentsReader: OriginalContentsReaderInterface,
+		private readonly originalContentReader: OriginalContentReaderInterface,
 		private readonly postUploader: PostUploader,
 	) {
 	}
 
 	async cloneOriginalPostsToGithub() {
-		const [newPosts, blog] = await this.originalContentsReader.readBlogsAndPosts();
-		const metadata = await this.githubUploader.uploadPosts(newPosts, blog);
+		const [posts, blog] = await this.originalContentReader.readBlogsAndPosts();
+		const metadata = await this.githubUploader.uploadPosts(posts, blog);
 		await this.spreadSheetUploader.fetchPosts(metadata);
 	}
 

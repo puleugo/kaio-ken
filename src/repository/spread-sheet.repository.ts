@@ -5,6 +5,7 @@ import {envManager, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import { sheets_v4 } from 'googleapis/build/src/apis/sheets/v4';
 
+// TODO: 개에바임. 이렇게 짜면 테스트 못함. 파싱로직은 따로 빼서 테스트하자.
 export interface SpreadSheetRepositoryInterface {
 	write(valueRange: sheets_v4.Schema$ValueRange): Promise<void>;
 
@@ -16,7 +17,6 @@ export interface SpreadSheetRepositoryInterface {
 
 	truncate(range: string): Promise<void>;
 }
-
 
 export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 	private auth = null;

@@ -104,7 +104,6 @@ export class Sitemap {
 	}
 
 	update(metadata: Metadata): void {
-		console.log(this.sitemap)
 		metadata.posts.map(metadataPost => {
 			const sitemapPost = this.sitemap.urlset.url.find(url => url.loc._text === metadataPost.originUrl);
 			if (!sitemapPost) {

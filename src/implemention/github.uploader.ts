@@ -11,6 +11,7 @@ import {spreadSheetUploader, SpreadSheetUploaderInterface} from "./spread-sheet.
 import {spreadSheetReader, SpreadSheetReaderInterface} from "./spread-sheet.reader";
 
 export interface GithubUploaderInterface {
+	// RSS로 조회된 게시글과 블로그를 업로드합니다.
 	uploadPosts(ports: Posts, blogs: Blogs): Promise<Metadata>;
 
 	uploadTranslatedPosts(translatedPosts: TranslatedPosts): Promise<Metadata>;
@@ -36,6 +37,7 @@ export class GithubUploader implements GithubUploaderInterface{
 		}
 		const metadata: Metadata = new Metadata(JSON.parse(jsonString));
 		metadata.addTranslatedPost(translatedPosts)
+		// TODO: Builder 사용하지 않고 구현하기
 		await this.githubRepository.upload(
 			new GithubUploadFileBuilder()
 				.addTranslatedPosts(translatedPosts)
@@ -46,21 +48,21 @@ export class GithubUploader implements GithubUploaderInterface{
 		return metadata;
     }
 
-	async uploadPosts(newPosts: Posts, blogs: Blogs): Promise<Metadata> {
-		if (newPosts.isEmpty){
-			throw new Error('새로운 포스트가 없어 업로드를 진행하지 않습니다.');
+	async uploadPosts(posts: Posts, blogs: Blogs): Promise<Metadata> {
+		if (posts.isEmpty){
+			throw new Error('게시글이 없어 업로드를 진행하지 않습니다.');
 		}
-		this.logger.debug('새로운 포스트가 발견되어 업로드를 진행합니다.');
-		const jsonString = await this.githubRepository.readOrNull(Metadata.path);
-		const metadata: Metadata = jsonString ? new Metadata(JSON.parse(jsonString)) : new Metadata({posts: newPosts, blogs});
-
-		await this.githubRepository.upload(
-			new GithubUploadFileBuilder()
-				.addPosts(newPosts)
-				.putBlogs(blogs)
-				.putMetadata(metadata)
-				.build()
-		);
+		this.logger.debug('게시글이 발견되어 업로드를 진행합니다.');
+		let metadata = await this.githubReader.readMetadata();
+		if (!metadata) { // 메타데이터가 존재하지 않으면 새로운 게시글과 메타데이터를 새로 생성
+			metadata = new Metadata({posts: posts, blogs});
+			await this.githubRepository.upload([...posts.toGithubUploadFiles, metadata.githubUploadFile,]);
+			return metadata;
+		}
+		// 메타데이터가 존재한다면 일부의 새로운 게시글과 업데이트된 메타데이터 업로드
+		const newPosts = posts.getComplement(metadata.posts);
+		metadata.update(posts, blogs);
+		await this.githubRepository.upload([...newPosts.toGithubUploadFiles, metadata.githubUploadFile,]);
 		return metadata
 	}
 

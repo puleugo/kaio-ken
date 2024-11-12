@@ -1,5 +1,5 @@
 import {Posts} from "../domain/posts";
-import {AiClientInterface, chatGptTranslatorRepository} from "../repository/translator.repository";
+import {AiRepositoryInterface, chatGptTranslatorRepository} from "../repository/translator.repository";
 import {z}from "zod";
 import {TranslatedPosts} from "../domain/translatedPosts";
 import {HrefTagEnum, isHrefTagEnum} from "../type";
@@ -12,7 +12,7 @@ export interface TranslatorInterface {
 }
 
 export class ChatGptTranslator implements TranslatorInterface{
-	constructor(private readonly aiClient: AiClientInterface, private readonly githubReader: GithubReaderInterface) {
+	constructor(private readonly aiClient: AiRepositoryInterface, private readonly githubReader: GithubReaderInterface) {
 	}
 
 	async translatePostsByLanguages(targetLanguageByPosts: ShouldTranslatePostsByLanguage): Promise<TranslatedPosts> {

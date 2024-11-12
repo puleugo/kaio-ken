@@ -29,6 +29,7 @@ export class PostReader implements PostReaderInterface {
 		}
 
 		// 번역해야할 언어 조회
+		// FIXME: 번역해야하는 언어에 게시글이 존재하는 경우 번역되지 않는 게시글을 조회하지 않는다.
 		const languages = metadata.blogs.subscribeBlogs.languages;
 		const shouldTranslatePostIndexes = new Set<number>();
 		languages.forEach((language) => {
