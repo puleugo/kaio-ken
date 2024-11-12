@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import './implemention/strategy';
 import {app} from "./app";
 import {envManager} from "./util/config/env-manager";
 
