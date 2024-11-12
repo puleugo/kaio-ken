@@ -1,11 +1,11 @@
-import {PostEntity, PostInterface} from "../../src/domain/postEntity";
+import {PostEntity, PostInterface, RawPostInterface} from "../../src/domain/postEntity";
 import {HrefTagEnum} from "../../src/type";
 import {TranslatedPosts} from "../../src/domain/translatedPosts";
 import {fakerKO} from "@faker-js/faker";
 import {DateUtil} from "../../src/util/util/DateUtil";
 
 export class PostMother {
-	static create(props?: Partial<PostInterface>): PostEntity {
+	static create(props?: Partial<RawPostInterface>): PostEntity {
 		return new PostEntity(Object.assign({
 			title: fakerKO.lorem.sentence(),
 			content: fakerKO.lorem.paragraph(),
@@ -25,7 +25,7 @@ export class PostMother {
 		return Array.from({length: time}, () => PostMother.create()).sort((a, b) => a.uploadedAt < b.uploadedAt ? -1 : 1);
 	}
 
-	static createWithTranslatedPosts(props: Partial<PostInterface>, translatedCount: number = 3): PostEntity {
+	static createWithTranslatedPosts(props: Partial<RawPostInterface>, translatedCount: number = 3): PostEntity {
 		const post = PostMother.create({...props, language: HrefTagEnum.Korean});
 		post.translatedPosts = new TranslatedPosts(PostMother.createMany(translatedCount));
 		return post;

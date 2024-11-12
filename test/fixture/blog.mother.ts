@@ -4,7 +4,7 @@ import {BlogPlatformEnum, HrefTagEnum} from "../../src/type";
 import {DateUtil} from "../../src/util/util/DateUtil";
 
 export class BlogMother {
-	static create(props: Partial<BlogInterface>): BlogEntity {
+	static create(props?: Partial<BlogInterface>): BlogEntity {
 		return new BlogEntity(Object.assign( {
 			title: fakerKO.lorem.sentence(),
 			platform: fakerKO.helpers.enumValue(BlogPlatformEnum),

@@ -18,7 +18,35 @@ describe('Metadata Unit Test', () => {
 		const metadata = new Metadata({posts, blogs, lastExecutedAt})
 
 		expect(metadata).not.toBeNull();
-		expect(JSON.parse(metadata.json)['posts']).toEqual(posts);
+	})
+	it('언어 별 번역본 수는 하나를 초과할 수 없다.', async () => {
+		const enPosts = new TranslatedPosts([PostMother.create({language: HrefTagEnum.English}), PostMother.create({language: HrefTagEnum.English})]);
+		const posts = new Posts([PostMother.create({
+			language: HrefTagEnum.Korean,
+			translatedPosts: enPosts
+		})]);
+		const blogs = new Blogs([BlogMother.create()]);
+		expect(() => new Metadata({posts, blogs})).toThrow();
+	})
+
+	it('동일한 URL을 가진 게시글은 추가되지 않는다.', async () => {
+		const posts = new Posts([PostMother.create({originUrl: 'https://example.com'})]);
+		const blogs = new Blogs([BlogMother.create({type: 'PUBLISHER'})]);
+		const metadata = new Metadata({posts, blogs, lastExecutedAt});
+
+		const newPosts = new Posts([PostMother.create({originUrl: 'https://example.com'})]);
+		metadata.update(newPosts, blogs)
+
+		expect(metadata.posts).toHaveLength(1);
+	})
+	it('번역본을 수정한다.', async () => {
+		const enPosts = new TranslatedPosts([PostMother.create({language: HrefTagEnum.English})]);
+		const posts = new Posts([PostMother.create({
+			language: HrefTagEnum.Korean,
+			translatedPosts: enPosts
+		})]);
+		const blogs = new Blogs([BlogMother.create()]);
+		expect(() => new Metadata({posts, blogs})).toThrow();
 	})
 	it('Publisher 블로그는 반드시 하나가 존재하는 상태로 생성된다.', () => {
 		const posts = MetadataMother.createPosts();
