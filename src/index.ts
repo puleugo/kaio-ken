@@ -21,6 +21,7 @@ async function bootstrap() {
 		'UPDATE_SPREAD_SHEET': () =>app.updateSpreadSheetSettings(),
 	}
 	const methods =  core.getMultilineInput('METHOD') as Array<keyof typeof methodObject>
+	core.debug(`methods: ${methods.join(', ')}`)
 
 	methods.map(method => {
 		if (!Object.keys(methodObject).includes(method))
