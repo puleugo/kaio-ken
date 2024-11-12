@@ -58,7 +58,7 @@ export class BlogEntity{
 	private value: BlogInterface;
 
 	addPosts(publishedPosts: Posts): void {
-		this.value.lastPublishedIndex += publishedPosts.length;
+		this.value.lastPublishedIndex += publishedPosts.last.index;
 	}
 
 	get lastPublishedId(): number {

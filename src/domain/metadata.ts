@@ -123,7 +123,7 @@ export class Metadata {
 		this._posts.push(newPosts.toEntities);
 
 		// 3. 블로그 업데이트
-		this._blogs.updateByNewData(newPosts, blogs)
+		this._blogs.updateByNewData(this._posts, blogs)
 
 		this._lastExecutedAt = new Date();
 	}
