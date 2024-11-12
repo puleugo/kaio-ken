@@ -20,7 +20,7 @@ async function bootstrap() {
 		'PUBLISH': () => app.uploadPosts(),
 		'UPDATE_SPREAD_SHEET': () =>app.updateSpreadSheetSettings(),
 	}
-	const methods =  core.getMultilineInput('METHOD', {required: true}) as Array<keyof typeof methodObject>
+	const methods =  core.getMultilineInput('METHOD', {required: true}).map(line => line.trim().replace(/^- /, '')) as Array<keyof typeof methodObject>
 	core.debug(`methods: ${methods.join(', ')}`)
 
 	methods.map(method => {
