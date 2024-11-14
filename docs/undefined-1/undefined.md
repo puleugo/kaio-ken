@@ -109,7 +109,8 @@ root
 
 ### 4-3. 구글 Private Key
 
-1. `서비스 계정` → `키` → `새 키 만들기` → `JSON` 선택 → `키 생성`
+1. [Welcom Page로 이동](https://console.cloud.google.com/welcome)
+2. `메뉴` → `IAM 및 관리자` → `서비스 계정` → `키` → `새 키 만들기` → `JSON` 선택 → `키 생성`
 
 
 
