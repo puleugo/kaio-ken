@@ -57,8 +57,8 @@ jobs:
             OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
             MEDIUM_TOKEN: ${{ secrets.MEDIUM_TOKEN }}
             METHOD: | # 게시글을 읽어서 Github에 저장, 번역하여 배포
-              - 'READ'
-              - 'PUBLISH' 
+              - READ
+              - PUBLISH
 ```
 {% endcode %}
 
