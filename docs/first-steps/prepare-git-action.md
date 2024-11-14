@@ -46,8 +46,8 @@ jobs:
       - name: Auto Translate
         uses: puleugo/kablog@main
         with:
-            GH_REPOSITORY: 'YOUR-REPOSITORY'
-            GH_USER: 'YOUR-USERNAME'
+            GH_REPOSITORY: 'YOUR-REPOSITORY' # *입력해주세요. 레퍼지토리 이름
+            GH_USER: 'YOUR-USERNAME' # *입력해주세요. Github User 이름
             GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
             GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
@@ -66,10 +66,11 @@ jobs:
 
 ## 3. sitemap.xml을 Git Repository에 추가합니다.
 
-배포 블로그의 sitemap을 복사합니다. Tistory의 경우 `https://{your-id}.tistory.com/rss`를 통해 읽어올 수 있습니다.
+배포 블로그의 sitemap을 복사합니다. Tistory의 경우 `https://{your-id}.tistory.com/sitemap.xml`을 복제합니다.
 
-다음과 같은 위치에 추가합니다.
+Repository에 위 동일한 내용을 가진 Sitemap을 복제합니다.
 
+{% code title="Github Repsitory" %}
 ```
 root
 ├─┬ .github
@@ -79,6 +80,7 @@ root
 └── sitemap.xml
 
 ```
+{% endcode %}
 
 
 
