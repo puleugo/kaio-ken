@@ -22,6 +22,7 @@ export class RssRepository implements RssRepositoryInterface {
 		const rss = jsonResult.rss;
 
 		let posts: Posts;
+		// TODO: RSS 파싱로직을 전략패턴 등으로 분리하기
 		if (blog.platform === BlogPlatformEnum.Tistory) {
 			posts = this.parsingTistoryRss(rss)
 		} else if (blog.platform === BlogPlatformEnum.WordPress) {
