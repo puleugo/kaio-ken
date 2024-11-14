@@ -1,7 +1,7 @@
 import {Posts} from "../domain/posts";
 import {PostEntity} from "../domain/postEntity";
 import {XMLParser} from "fast-xml-parser";
-import {HrefTagEnum, RssResponse} from "../type";
+import {BlogPlatformEnum, HrefTagEnum, RssResponse} from "../type";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import {BlogEntity} from "../domain/blog.entity";
 
@@ -21,9 +21,15 @@ export class RssRepository implements RssRepositoryInterface {
 		const jsonResult = this.xmlParser.parse(body);
 		const rss = jsonResult.rss;
 
-		const posts = this.parsingTistoryRss(rss)
+		let posts: Posts;
+		if (blog.platform === BlogPlatformEnum.Tistory) {
+			posts = this.parsingTistoryRss(rss)
+		} else if (blog.platform === BlogPlatformEnum.WordPress) {
+			posts = this.parsingWordpressRss(rss);
+		}
+
 		posts.blog = blog;
-		this.logger.debug(`${blog.lastPublishedAt} 이후의 새로운 포스트 ${posts.length}개를 찾았습니다.`);
+		this.logger.debug(`${blog.lastPublishedAt} 기준 RSS 게시글 ${posts.length}개를 찾았습니다.`);
 
 		return posts;
 	}
@@ -35,6 +41,21 @@ export class RssRepository implements RssRepositoryInterface {
 			new PostEntity({
 				title: post.title,
 				content: post.description,
+				uploadedAt: post.pubDate,
+				hasUploadedOnGithub: false,
+				originUrl: post.guid,
+				language: HrefTagEnum.Korean,
+			})
+		));
+	}
+
+	private parsingWordpressRss(raw: RssResponse): Posts {
+		this.logger.debug('티스토리 RSS를 파싱합니다.');
+		const rawPosts = raw.channel.item.sort((a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime());
+		return new Posts(rawPosts.map(post =>
+			new PostEntity({
+				title: post.title,
+				content: post['content:encoded'],
 				uploadedAt: post.pubDate,
 				hasUploadedOnGithub: false,
 				originUrl: post.guid,

@@ -26,6 +26,7 @@ interface PostRssResponse {
 	title: string;
 	link: string;
 	description: string;
+	'content:encoded'?: string;
 	category: string;
 	author: string;
 	guid: string;
@@ -38,6 +39,7 @@ export enum BlogPlatformEnum {
 	Velog = 'Velog', // 한국 대표격2
 	Qiita = 'Qiita', // 일본 대표격
 	Medium = 'Medium', // 영어 대표격
+	WordPress = 'WordPress', // 글로벌 서비스
 }
 
 export enum HrefTagEnum {
@@ -198,6 +200,7 @@ export const blogLanguageMap = new Map<BlogPlatformEnum, HrefTagEnum>([
 	[BlogPlatformEnum.Velog, HrefTagEnum.Korean],
 	[BlogPlatformEnum.Medium, HrefTagEnum.English],
 	[BlogPlatformEnum.Qiita, HrefTagEnum.Japanese],
+	[BlogPlatformEnum.WordPress, HrefTagEnum.Korean]
 ]);
 
 export function isLanguageEnum(arg: any): arg is HrefTagEnum {
