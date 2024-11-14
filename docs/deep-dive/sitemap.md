@@ -11,12 +11,12 @@ description: 마법같은 Sitemap을 통해 블로그 플랫폼에 의존하지 
 
 {% hint style="info" %}
 이는 추론이 아니라 구글에서 제공하는 기능입니다.\
-[Google에 페이지의 현지화된 버전 알리기](https://developers.google.com/search/docs/specialty/international/localized-versions)를 보면 Sitemap을 사용하는 방식에 대해 설명합니다.
+[Google에 페이지의 현지화된 버전 알리기](https://developers.google.com/search/docs/specialty/international/localized-versions)가이드에서 Sitemap을 사용하여 현지화 버전을 명시하는 방법에 대해 설명합니다.
 {% endhint %}
 
 
 
-## 어떻게  블로그 플랫폼을 이용하면서 그런게 가능한가요?
+## 블로그 플랫폼을 어떻게  이를 구현할 수 있나요?
 
 기본적으로 블로그 플랫폼이 제공하는 Sitemap을 수정하는 것은 불가능하지만, 개인 도메인을 연결하면 해당 도메인에 대한 Sitemap을 직접 등록하고 수정할 수 있는 권한을 얻게 됩니다.
 
