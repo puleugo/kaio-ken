@@ -9,4 +9,4 @@
 
 ## 딥 다이브 <a href="#deep-dive" id="deep-dive"></a>
 
-* [Sitemap이란?](deep-dive/sitemap.md)
+* [계왕권의 본질, Sitemap](deep-dive/sitemap.md)

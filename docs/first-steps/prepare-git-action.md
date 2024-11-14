@@ -64,6 +64,8 @@ jobs:
 
 
 
+
+
 ## 3. sitemap.xml을 Git Repository에 추가합니다.
 
 배포 블로그의 sitemap을 복사합니다. Tistory의 경우 `https://{your-id}.tistory.com/sitemap.xml`을 복제합니다.
@@ -82,6 +84,10 @@ root
 ```
 {% endcode %}
 
+{% hint style="info" %}
+아래 Repository의 [sitemap.xml](https://github.com/puleugo/puleugo.dev/blob/main/sitemap.xml)을 참고하세요.
+{% endhint %}
+
 
 
 ## 4. 환경 변수 추가
@@ -90,7 +96,9 @@ root
 
 <table><thead><tr><th align="center">속성</th><th width="126">예상 소요시간</th><th align="center">설명</th><th align="center">발급 방법</th></tr></thead><tbody><tr><td align="center">GH_TOKEN</td><td>1m</td><td align="center">깃허브 액션 실행 토큰</td><td align="center"><a href="prepare-git-action.md#id-3-1">GO TO</a></td></tr><tr><td align="center">GOOGLE_CLIENT_EMAIL</td><td>1m</td><td align="center">GOOGLE API 호출 담당자 EMAIL<br>(Sheet API 권한 필요)</td><td align="center"><a href="prepare-git-action.md#id-3-2">GO TO</a></td></tr><tr><td align="center">GOOGLE_PRIVATE_KEY</td><td>1s</td><td align="center">GOOGLE API 호출 Key</td><td align="center"><a href="prepare-git-action.md#id-3-3.-private-key">GO TO</a></td></tr><tr><td align="center">GOOGLE_SHEET_ID</td><td>30s</td><td align="center">구글 스프레드 시트 ID</td><td align="center"><a href="prepare-git-action.md#id-3-4.-id">GO TO</a></td></tr><tr><td align="center">OPENAI_API_KEY</td><td>30s</td><td align="center">ChatGPT API Key</td><td align="center"><a href="prepare-git-action.md#id-3-5.-chat-gpt-key-open-ai">GO TO</a></td></tr><tr><td align="center">MEDIUM_TOKEN</td><td>30s</td><td align="center">Medium API Token</td><td align="center"><a href="prepare-git-action.md#id-3-6.-medium-token">GO TO</a></td></tr></tbody></table>
 
+Repository의 Secret에 추가해주시면 됩니다.
 
+<figure><img src="../.gitbook/assets/스크린샷 2024-11-14 오후 2.27.42.png" alt=""><figcaption></figcaption></figure>
 
 ### 4-1. 깃허브 토큰
 
