@@ -86,7 +86,7 @@ root
 
 계왕권은 노코드 툴을 지향하는 서비스이기 때문에 외부 의존성과 환경 변수를 추가해주어야 합니다. 다행인 점은 유능한 개발자분들이 많아서 대부분의 서비스에서 버튼 2-3회 클릭만으로 API 토큰을 쉽게 발급할 수 있다는 점입니다.
 
-<table><thead><tr><th align="center">속성</th><th width="126">예상 소요시간</th><th align="center">설명</th><th align="center">발급 방법</th></tr></thead><tbody><tr><td align="center">GH_TOKEN</td><td>1m</td><td align="center">깃허브 액션 실행 토큰</td><td align="center"><a href="undefined.md#id-3-1">GO TO</a></td></tr><tr><td align="center">GOOGLE_CLIENT_EMAIL</td><td>1m</td><td align="center">GOOGLE API 호출 담당자 EMAIL<br>(Sheet API 권한 필요)</td><td align="center"><a href="undefined.md#id-3-2">GO TO</a></td></tr><tr><td align="center">GOOGLE_PRIVATE_KEY</td><td>1s</td><td align="center">GOOGLE API 호출 Key</td><td align="center"><a href="undefined.md#id-3-3.-private-key">GO TO</a></td></tr><tr><td align="center">GOOGLE_SHEET_ID</td><td>30s</td><td align="center">구글 스프레드 시트 ID</td><td align="center"><a href="undefined.md#id-3-4.-id">GO TO</a></td></tr><tr><td align="center">OPENAI_API_KEY</td><td>30s</td><td align="center">ChatGPT API Key</td><td align="center"><a href="undefined.md#id-3-5.-chat-gpt-key-open-ai">GO TO</a></td></tr><tr><td align="center">MEDIUM_TOKEN</td><td>30s</td><td align="center">Medium API Token</td><td align="center"><a href="undefined.md#id-3-6.-medium-token">GO TO</a></td></tr></tbody></table>
+<table><thead><tr><th align="center">속성</th><th width="126">예상 소요시간</th><th align="center">설명</th><th align="center">발급 방법</th></tr></thead><tbody><tr><td align="center">GH_TOKEN</td><td>1m</td><td align="center">깃허브 액션 실행 토큰</td><td align="center"><a href="prepare-git-action.md#id-3-1">GO TO</a></td></tr><tr><td align="center">GOOGLE_CLIENT_EMAIL</td><td>1m</td><td align="center">GOOGLE API 호출 담당자 EMAIL<br>(Sheet API 권한 필요)</td><td align="center"><a href="prepare-git-action.md#id-3-2">GO TO</a></td></tr><tr><td align="center">GOOGLE_PRIVATE_KEY</td><td>1s</td><td align="center">GOOGLE API 호출 Key</td><td align="center"><a href="prepare-git-action.md#id-3-3.-private-key">GO TO</a></td></tr><tr><td align="center">GOOGLE_SHEET_ID</td><td>30s</td><td align="center">구글 스프레드 시트 ID</td><td align="center"><a href="prepare-git-action.md#id-3-4.-id">GO TO</a></td></tr><tr><td align="center">OPENAI_API_KEY</td><td>30s</td><td align="center">ChatGPT API Key</td><td align="center"><a href="prepare-git-action.md#id-3-5.-chat-gpt-key-open-ai">GO TO</a></td></tr><tr><td align="center">MEDIUM_TOKEN</td><td>30s</td><td align="center">Medium API Token</td><td align="center"><a href="prepare-git-action.md#id-3-6.-medium-token">GO TO</a></td></tr></tbody></table>
 
 
 
@@ -136,10 +136,6 @@ root
 2. `Integration tokens` 클릭
 
 
-
-
-
-##
 
 
 

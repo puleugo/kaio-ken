@@ -12,7 +12,7 @@ Medium, Tistory로부터 게시글에 대한 메타데이터를 수정할 권리
 
 ## 2. Vercel과 Github Repository를 연결하기
 
-Vercel을 통해 [sitemap.xml](../undefined-2/sitemap.md)을 업로드할 웹서버를 생성합니다.\
+Vercel을 통해 [sitemap.xml](../deep-dive/sitemap.md)을 업로드할 웹서버를 생성합니다.\
 [Vercel](https://vercel.com)에 접속하여 계왕권 Action이 추가되어 있는 Git Repository를 Import를 수행하면 됩니다.&#x20;
 
 서버 인스턴스가 생성되면 다음 Step으로 넘어갑니다.

@@ -20,7 +20,7 @@
 
 
 
-## 번역본
+## 결과물 미리보기
 
 {% embed url="https://en.puleugo.dev/refactoring-monster-methods-and-improving-performance-refactor-safely-0fe2f2140d22" %}
 Translated

@@ -2,11 +2,11 @@
 
 * [소개](README.md)
 
-## 시작하기
+## 시작하기 <a href="#first-steps" id="first-steps"></a>
 
-* [실행을 위한 준비](undefined-1/undefined.md)
-* [현지화 버저닝](undefined-1/undefined-1.md)
+* [실행을 위한 준비](first-steps/prepare-git-action.md)
+* [현지화 버저닝](first-steps/prepare-versioning.md)
 
-## 딥 다이브
+## 딥 다이브 <a href="#deep-dive" id="deep-dive"></a>
 
-* [Sitemap이란?](undefined-2/sitemap.md)
+* [Sitemap이란?](deep-dive/sitemap.md)
