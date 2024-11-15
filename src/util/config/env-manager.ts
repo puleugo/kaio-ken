@@ -10,8 +10,8 @@ export class EnvManager implements EnvManagerInterface{
 
 	getOrThrow(key: string): string {
 		this.logger.debug(`${key}를 가져옵니다.`);
-		let value = process.env[key];
-		if (!value) {
+		const value = process.env[key];
+		if (!value || value.length === 0) {
 			throw new Error(`${key}가 빈값입니다.`);
 		}
 		return value.replace(new RegExp("\\\\n", "\g"), "\n"); // 구글 인증 키에서 줄바꿈 문자를 처리하기 위함
@@ -43,6 +43,18 @@ export class EnvManager implements EnvManagerInterface{
 			throw new Error('key가 필요합니다.');
 		}
 		process.env[key] = value;
+	}
+
+	static isvalidPem(value: string): boolean {
+		const trimmedValue = value.trim();
+
+		const pemRegex = /^-----BEGIN (CERTIFICATE|PRIVATE KEY|PUBLIC KEY)-----\n([A-Za-z0-9+/=\n]+)-----END \1-----$/;
+		if (!pemRegex.test(trimmedValue)) {
+			throw new Error('올바른 PEM 형식이 아닙니다.');
+		}
+		// Base64 인코딩된 본문을 추출하여 각 줄 길이도 검사 (PEM 표준은 64자 길이의 줄로 나뉨)
+		const lines = value.trim().split('\n').slice(1, -2); // 첫 번째와 마지막 라인 제거
+		return lines.every(line => line.length === 64 || line.length === 0); // 마지막 줄은 64자보다 짧을 수 있음
 	}
 }
 

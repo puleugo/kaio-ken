@@ -1,7 +1,7 @@
 import {Posts} from "../domain/posts";
 import {google} from "googleapis";
 import {Blogs} from "../domain/blogs";
-import {envManager, EnvManagerInterface} from "../util/config/env-manager";
+import {EnvManager, envManager, EnvManagerInterface} from "../util/config/env-manager";
 import {githubActionLogger, LoggerInterface} from "../util/logger/github-action.logger";
 import { sheets_v4 } from 'googleapis/build/src/apis/sheets/v4';
 
@@ -29,21 +29,40 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 			return;
 		}
 		this.spreadsheetId = this.envValidator.getOrThrow('GOOGLE_SHEET_ID');
+
+		this.logger.debug('구글 PRIVATE KEY를 가져옵니다.');
+		const privateKey = this.envValidator.getOrThrow('GOOGLE_PRIVATE_KEY').replace(/\\n/g, '\n');
+		if (!EnvManager.isvalidPem(privateKey)) {
+			this.logger.error('구글 PRIVATE KEY가 올바르지 않습니다. PEM 형식이어야 합니다.')
+			throw new Error('구글 PRIVATE KEY가 올바르지 않습니다. PEM 형식이어야 합니다.')
+		}
+
 		this.logger.debug('구글 API 접근에 대한 인증을 시도합니다.')
-		this.auth = new google.auth.GoogleAuth({
-			credentials: {
-				client_email: this.envValidator.getOrThrow('GOOGLE_CLIENT_EMAIL'),
-				private_key: this.envValidator.getOrThrow('GOOGLE_PRIVATE_KEY')
-			},
-			scopes: [
-				'https://www.googleapis.com/auth/spreadsheets',
-			],
-		});
+		try {
+			this.auth = new google.auth.GoogleAuth({
+				credentials: {
+					client_email: this.envValidator.getOrThrow('GOOGLE_CLIENT_EMAIL'),
+					private_key: privateKey,
+				},
+				scopes: [
+					'https://www.googleapis.com/auth/spreadsheets',
+				],
+			});
+		} catch (e) {
+			this.logger.error('구글 API 접근에 대한 인증에 실패했습니다. 구글 API 인증 정보를 확인해주세요.')
+			throw e;
+		}
 		this.logger.debug('스프레드 시트 API 접근에 대한 인증을 시도합니다.')
-		this.sheetApi = google.sheets({
-			version: 'v4',
-			auth: this.auth,
-		}).spreadsheets.values;
+
+		try {
+			this.sheetApi = google.sheets({
+				version: 'v4',
+				auth: this.auth,
+			}).spreadsheets.values;
+		} catch (e) {
+			this.logger.error('스프레드 시트 API 접근에 대한 인증에 실패했습니다. 구글 API 인증 정보를 확인해주세요.')
+			throw e;
+		}
 	}
 
 	async readPosts(): Promise<Posts> {
