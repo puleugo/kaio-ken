@@ -25,6 +25,7 @@ export class TranslatedPosts {
 		if (translatedPosts.length === 0) {
 			return;
 		}
+		translatedPosts = translatedPosts.filter(post => post !== undefined);
 		const temp = new Map<HrefTagEnum, PostEntity[]>();
 		translatedPosts.forEach(post => {
 			if (temp.has(post.language)) {
@@ -51,7 +52,7 @@ export class TranslatedPosts {
 	}
 
 	get postsWithLanguage(): TranslatedPostWithLanguage {
-		let result = {};
+		const result = {};
 		this.translatedPosts.forEach((posts, language) => {
 			result[language] = posts.toEntities.map(post => ({
 				title: post.title,

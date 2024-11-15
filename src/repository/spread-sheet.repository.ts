@@ -49,7 +49,7 @@ export class SpreadSheetRepository implements SpreadSheetRepositoryInterface {
 				],
 			});
 		} catch (e) {
-			this.logger.error('구글 API 접근에 대한 인증에 실패했습니다. 구글 API 인증 정보를 확인해주세요.')
+			this.logger.error('구글 API 접근에 대한 인증에 실패했습니다. GOOGLE CLIENT EMAIL과 PRIVATE KEY를 확인해주세요.')
 			throw e;
 		}
 		this.logger.debug('스프레드 시트 API 접근에 대한 인증을 시도합니다.')
