@@ -4,7 +4,7 @@ description: Spread Sheet, Git Action에 대한 설정을 수행합니다.
 
 # 실행을 위한 준비
 
-## 1. Google SpreadSheet 복제
+1\. Google SpreadSheet 복제
 
 시작하기 위해서는 [Google SpreadSheet Template](https://docs.google.com/spreadsheets/d/1cF9sShsCInHFomFTC69LC9QzVKJQZK2\_TqCs9hNMRMk/edit?gid=0#gid=0)을 복제해야합니다. SpreadSheet는 Blogs에 대한 정보를 읽어오는 데에 사용됩니다.
 
@@ -128,8 +128,10 @@ Repository의 Secret에 추가해주시면 됩니다.
 
 1. [Google Sheet 템플릿 접속](https://docs.google.com/spreadsheets/d/1cF9sShsCInHFomFTC69LC9QzVKJQZK2\_TqCs9hNMRMk)
 2. `파일` → `사본 만들기`
-3. `복제된 시트`의 URL에서 `https://docs.google.com/spreadsheets/d/` 뒷부분이 `GOOGLE_SHEET_ID` \
-   예시: `1cF9sShsCInHFomFTC69LC9QzVKJQZK2_TqCs9hNMRMk`
+3. `복제된 시트`의 URL에서 SPREADSHEET\_ID를 추출합니다.
+
+<pre class="language-url"><code class="lang-url">https://docs.google.com/spreadsheets/d/<a data-footnote-ref href="#user-content-fn-1">SPREADSHEET_ID</a>/edit?gid=<a data-footnote-ref href="#user-content-fn-2">SHEET_ID</a>#gid=<a data-footnote-ref href="#user-content-fn-3">SHEET_ID</a>
+</code></pre>
 
 
 
@@ -154,3 +156,10 @@ Repository의 Secret에 추가해주시면 됩니다.
 \
 
 
+
+
+[^1]: SPREADSHEET ID
+
+[^2]: SHEET ID
+
+[^3]: SHEET ID
