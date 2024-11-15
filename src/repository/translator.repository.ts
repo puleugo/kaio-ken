@@ -47,8 +47,10 @@ class ChatGptTranslatorRepository implements AiRepositoryInterface{
 				throw error;
 			}
 			else if (error instanceof APIError) {
-				this.logger.error(`${error.code}, ${error.message}, 게시글 번역에 실패했습니니다.`);
+				this.logger.error(`${error.code}, ${error.message}, 게시글 번역에 실패했습니다.`);
+				throw error;
 			}
+			this.logger.error(`게시글 번역을 실패했습니다.`);
 			throw error;
 		}
 	}

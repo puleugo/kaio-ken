@@ -55,11 +55,14 @@ export class ChatGptTranslator implements TranslatorInterface{
 					`4. Add anything that is lacking in the description`;
 			const postMessage = `# ${post.title}\n ${post.content}`;
 
+			const remainToken = this.tokenCalculator.usedToken;
+
 			if (!this.tokenCalculator.canBeRequest(systemMessage+postMessage)) {
 				this.logger.warn(`1회 번역량 제한을 초과했습니다. ${post.index}번 글은 번역을 건너뜁니다. 약 3분후에 호출 제한이 풀립니다.`);
 				return;
 			}
 			this.tokenCalculator.addText(systemMessage+postMessage);
+			this.logger.debug(`${remainToken} + ${this.tokenCalculator.usedToken - remainToken} = ${this.tokenCalculator.usedToken} 번역 요청 가능합니다.`)
 			const result = await this.aiClient.chat(
 				systemMessage,
 				postMessage,

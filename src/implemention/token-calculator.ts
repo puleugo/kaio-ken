@@ -1,4 +1,5 @@
 export interface TokenCalculatorInterface {
+	usedToken: number;
 	addText(text: string): void;
 	canBeRequest(text: string): boolean;
 }
@@ -8,6 +9,10 @@ export class BpeTokenCalculator implements TokenCalculatorInterface {
 	private vocabulary = new Map<string, number>();
 
 	constructor(private readonly tokenCountPerOneCall: number) {}
+
+	get usedToken(): number {
+		return Array.from(this.vocabulary.values()).reduce((sum, count) => sum + count, 0);
+	};
 
 	/**
 	 * 텍스트를 토큰화하고, 각 토큰의 빈도수를 사전에 추가합니다.

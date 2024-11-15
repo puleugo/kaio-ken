@@ -15,7 +15,7 @@ describe('ChatGptTranslator Integration Test', () => {
 	beforeAll(() => {
 		aiRepositoryStub = new AiRepositoryStub();
 		githubReaderStub = new GithubReaderStub();
-		chatGptTranslator = new ChatGptTranslator(aiRepositoryStub, githubReaderStub);
+		chatGptTranslator = new ChatGptTranslator(aiRepositoryStub, githubReaderStub, console);
 	})
 
 	afterEach(() => {
