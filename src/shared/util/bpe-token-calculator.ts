@@ -1,6 +1,6 @@
 export interface TokenCalculator {
 	usedToken: number;
-	hasTokenOverflowed: boolean;
+	hasOverTokenCount: boolean;
 	addText(text: string): void;
 	canBeRequest(text: string): boolean;
 }
@@ -18,7 +18,7 @@ export class BpeTokenCalculator implements TokenCalculator {
 		return Array.from(this.vocabulary.values()).reduce((sum, count) => sum + count, 0);
 	}
 
-	get hasTokenOverflowed(): boolean {
+	get hasOverTokenCount(): boolean {
 		return Array.from(this.vocabulary.values()).reduce((sum, count) => sum + count, 0) > this.tokenCountPerOneCall;
 	}
 
