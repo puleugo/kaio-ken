@@ -30,8 +30,8 @@ export class QiitaUploader extends BlogPlatformUploader {
 
 	async putUpload(post: Translation): Promise<Translation> {
 		const payload: QiitaUploadPayload = {
-			title: "test",
-			body: "hi",
+			title: post.title,
+			body: post.body,
 			tags: [
 				{ name: "test", versions: [] },
 				{ name: "rails", versions: [] },
