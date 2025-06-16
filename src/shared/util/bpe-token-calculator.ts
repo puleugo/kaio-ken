@@ -1,10 +1,14 @@
-export interface TokenCalculatorInterface {
+export interface TokenCalculator {
 	usedToken: number;
+	hasTokenOverflowed: boolean;
 	addText(text: string): void;
 	canBeRequest(text: string): boolean;
 }
 
-export class BpeTokenCalculator implements TokenCalculatorInterface {
+/**
+ * BPE 토큰화를 사용하여 토큰 수를 계산하는 클래스
+ */
+export class BpeTokenCalculator implements TokenCalculator {
 	// 토큰 사전
 	private vocabulary = new Map<string, number>();
 
@@ -12,7 +16,11 @@ export class BpeTokenCalculator implements TokenCalculatorInterface {
 
 	get usedToken(): number {
 		return Array.from(this.vocabulary.values()).reduce((sum, count) => sum + count, 0);
-	};
+	}
+
+	get hasTokenOverflowed(): boolean {
+		return Array.from(this.vocabulary.values()).reduce((sum, count) => sum + count, 0) > this.tokenCountPerOneCall;
+	}
 
 	/**
 	 * 텍스트를 토큰화하고, 각 토큰의 빈도수를 사전에 추가합니다.
@@ -43,10 +51,7 @@ export class BpeTokenCalculator implements TokenCalculatorInterface {
 		}
 
 		// 가상 사전의 총 토큰 수 계산
-		const virtualVocabularyTokenCount = Array.from(virtualVocabulary.values()).reduce(
-			(sum, count) => sum + count,
-			0
-		);
+		const virtualVocabularyTokenCount = Array.from(virtualVocabulary.values()).reduce((sum, count) => sum + count, 0);
 
 		return virtualVocabularyTokenCount <= this.tokenCountPerOneCall;
 	}
@@ -55,7 +60,6 @@ export class BpeTokenCalculator implements TokenCalculatorInterface {
 	 * 텍스트를 개별 문자로 나누고 공백으로 구분하여 토큰화합니다.
 	 */
 	private tokenize(text: string): string[] {
-		return text.split('').map((char) => char + ' ');
+		return text.split("").map((char) => `${char} `);
 	}
 }
-
