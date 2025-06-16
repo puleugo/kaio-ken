@@ -16,7 +16,6 @@ export class DownloadPostsController extends BaseGithubActionController {
 
 			return this.complete();
 		} catch (e: unknown) {
-			// TODO: 예외처리
 			return this.fail(e);
 		}
 	}
