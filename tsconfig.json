@@ -15,7 +15,11 @@
 		"strictNullChecks": true,
 		"strictPropertyInitialization": false,
 		"noImplicitThis": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"paths": {
+			"@src/*": ["./src/*"],
+			"@test/*": ["./test/*"]
+		}
 	},
 	"ts-node": {
 		"compilerOptions": {
