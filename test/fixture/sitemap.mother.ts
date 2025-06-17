@@ -1,29 +1,40 @@
-import {Sitemap} from "../../src/domain/sitemap";
-import {DateUtil} from "../../src/util/util/DateUtil";
-import {Metadata} from "../../src/domain/metadata";
+import type { Metadata } from "@src/module/domain/metadata";
+import { Sitemap } from "@src/module/domain/sitemap";
+import { UrlSet } from "@src/module/domain/url-set";
+import { UrlTag } from "@src/module/domain/url-tag";
+import { XmlDeclaration } from "@src/module/domain/xml-declaration";
 
-export class SitemapMother {
-	static createByMetadata(metadata: Metadata, ignoreTranslated = true): Sitemap {
-		if (ignoreTranslated) {
-			return new Sitemap(metadata.posts.map(post => {
-				return {
-					loc: {_text: post.originUrl},
-					lastmod: {_text: DateUtil.nowFormatYYYYMMDD}
-				}
-			}))
-		}
-		return new Sitemap(metadata.posts.map(post => {
-			return {
-				loc: {_text: post.originUrl},
-				lastmod: {_text: DateUtil.nowFormatYYYYMMDD},
-				"xhtml:link": post.translatedPosts.map(translatedPost => ({
-					_attributes: {
-						rel: 'alternate',
-						hreflang: translatedPost.language,
-						href: translatedPost.originUrl,
-					}
-				}))
-			}
-		}))
+export namespace SitemapMother {
+	export function createByMetadata(metadata: Metadata): Sitemap {
+		const urlTag = UrlTag.create({ location: metadata.publisher.url.toUrl() }).getValue();
+		const urlSet = UrlSet.create({
+			xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
+			"xmlns:xhtml": "http://www.w3.org/1999/xhtml",
+			urlSet: [urlTag],
+		});
+
+		return Sitemap.from({
+			declaration: XmlDeclaration.create({
+				version: 1.0,
+				encoding: "UTF-8",
+			}),
+			urlSet,
+		}).getValue();
+	}
+
+	export function createEmpty(): Sitemap {
+		const urlSet = UrlSet.create({
+			xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
+			"xmlns:xhtml": "http://www.w3.org/1999/xhtml",
+			urlSet: [],
+		});
+
+		return Sitemap.from({
+			declaration: XmlDeclaration.create({
+				version: 1.0,
+				encoding: "UTF-8",
+			}),
+			urlSet,
+		}).getValue();
 	}
 }

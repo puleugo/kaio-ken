@@ -1,46 +1,60 @@
-import {BlogEntity, BlogInterface} from "../../src/domain/blog.entity";
-import {fakerKO} from "@faker-js/faker";
-import {BlogPlatformEnum, HrefTagEnum} from "../../src/type";
-import {DateUtil} from "../../src/util/util/DateUtil";
+import { BlogPlatform } from "@src/module/domain/blog-platform";
+import { BlogPublishedId } from "@src/module/domain/blog-published-id";
+import { BlogTitle } from "@src/module/domain/blog-title";
+import { BlogType } from "@src/module/domain/blog-type";
+import { BlogUrl } from "@src/module/domain/blog-url";
+import { BlogEntity } from "@src/module/domain/blog.entity";
+import { Language } from "@src/module/domain/language";
 
-export class BlogMother {
-	static create(props?: Partial<BlogInterface>): BlogEntity {
-		return new BlogEntity(Object.assign( {
-			title: fakerKO.lorem.sentence(),
-			platform: fakerKO.helpers.enumValue(BlogPlatformEnum),
-			language: fakerKO.helpers.enumValue(HrefTagEnum),
-			rssUrl: fakerKO.internet.url(),
-			lastPublishedIndex: fakerKO.number.int({min: 0, max: 100}),
-			lastPublishedAt: fakerKO.date.recent(),
-			type: fakerKO.helpers.arrayElement(['PUBLISHER', 'SUBSCRIBER', 'UNSUBSCRIBER'])
-		}, props));
+export namespace BlogMother {
+	export function createPublisher(language?: Language, lastPublishedId = 0): BlogEntity {
+		const platform = BlogPlatform.from("tistory").getValue();
+		const title = BlogTitle.create("Publisher Blog").getValue();
+		const url = BlogUrl.from("https://example.com").getValue();
+		const rssUrl = BlogUrl.from("https://example.com/rss").getValue();
+
+		return BlogEntity.create({
+			platform,
+			language: language ?? Language.from("en").getValue(),
+			title,
+			url,
+			rssUrl,
+			type: BlogType.PUBLISHER,
+			lastPublishedId: BlogPublishedId.from(lastPublishedId).getValue(),
+		}).getValue();
 	}
 
-	static createMany(length = fakerKO.number.int({min: 1, max: 10})): BlogEntity[] {
-		const publisherBlog = BlogMother.create({type: 'PUBLISHER'});
-		const subscriberBlogs: BlogEntity[] = Array.from({length: length-1}, () => BlogMother.create({type: 'SUBSCRIBER', lastPublishedIndex: fakerKO.number.int({min: 0, max: publisherBlog.lastPublishedId})}));
-		return [publisherBlog, ...subscriberBlogs];
+	export function createSubscriber(language?: Language, lastPublishedId = 0): BlogEntity {
+		const platform = BlogPlatform.from("medium").getValue();
+		const title = BlogTitle.create("Subscriber Blog").getValue();
+		const url = BlogUrl.from("https://example.com").getValue();
+		const rssUrl = BlogUrl.from("https://example.com/rss").getValue();
+
+		return BlogEntity.create({
+			platform,
+			language: language ?? Language.from("en").getValue(),
+			title,
+			url,
+			rssUrl,
+			type: BlogType.SUBSCRIBER,
+			lastPublishedId: BlogPublishedId.from(lastPublishedId).getValue(),
+		}).getValue();
 	}
 
-	static createManyWithRealPublisher(length = fakerKO.number.int({min: 1, max: 10})): BlogEntity[] {
-		const publisherBlog = BlogMother.createRealPublisher();
-		const subscriberBlogs: BlogEntity[] = Array.from({length: length-1}, () => BlogMother.create({type: 'SUBSCRIBER', language: HrefTagEnum.Korean, lastPublishedIndex: fakerKO.number.int({min: 0, max: publisherBlog.lastPublishedId})}));
-		return [publisherBlog, ...subscriberBlogs];
-	}
+	export function createUnSubscriber(language?: Language, lastPublishedId = 0): BlogEntity {
+		const platform = BlogPlatform.from("medium").getValue();
+		const title = BlogTitle.create("UnSubscriber Blog").getValue();
+		const url = BlogUrl.from("https://example.com").getValue();
+		const rssUrl = BlogUrl.from("https://example.com/rss").getValue();
 
-	static createManyWithoutPublisher(length = fakerKO.number.int({min: 1, max: 10})): BlogEntity[] {
-		return Array.from({length}, () => BlogMother.create({type: 'SUBSCRIBER'}));
-	}
-
-	static createRealPublisher() {
-		return new BlogEntity({
-			title: '푸르고의 개발 블로그',
-			platform: BlogPlatformEnum.Tistory,
-			language: HrefTagEnum.Korean,
-			rssUrl: 'https://puleugo.tistory.com/rss',
-			lastPublishedIndex: fakerKO.number.int({min: 0, max: 100}),
-			lastPublishedAt: DateUtil.min,
-			type: "PUBLISHER"
-		});
+		return BlogEntity.create({
+			platform,
+			language: language ?? Language.from("en").getValue(),
+			title,
+			url,
+			rssUrl,
+			type: BlogType.UNSUBSCRIBER,
+			lastPublishedId: BlogPublishedId.from(lastPublishedId).getValue(),
+		}).getValue();
 	}
 }
